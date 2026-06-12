@@ -1,10 +1,8 @@
-create database meditrack;
-
 create TYPE user_role AS ENUM(
 'PATIENT',
 'DOCTOR',
 'ADMIN'
-)
+);
 
 create table users(
 id uuid primary key default gen_random_uuid(),
@@ -18,7 +16,7 @@ create table appointment(
 id uuid primary key default gen_random_uuid(),
 patientId uuid references users(id),
 doctorId uuid references users(id),
-datetime timestamp not null,
+datetime timestamp default current_timestamp not null,
 status varchar(50) not null
 );
 
@@ -26,7 +24,7 @@ create table medicalrecord(
 id uuid primary key default gen_random_uuid(),
 userId uuid references users(id),
 filePath text not null,
-uploadedAt timestamp not null,
+uploadedAt timestamp default current_timestamp not null,
 description text not null
 );
 
@@ -35,5 +33,5 @@ id uuid primary key default gen_random_uuid(),
 senderId uuid references users(id),
 receiverId uuid references users(id),
 content text not null,
-sentAt timestamp not null
+sentAt timestamp default current_timestamp not null
 );
