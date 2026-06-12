@@ -16,9 +16,11 @@ create table appointment(
 id uuid primary key default gen_random_uuid(),
 patientId uuid references users(id),
 doctorId uuid references users(id),
-datetime timestamp default current_timestamp not null,
+datetime timestamp not null,
 status varchar(50) not null
 );
+
+drop table appointment;
 
 create table medicalrecord(
 id uuid primary key default gen_random_uuid(),
