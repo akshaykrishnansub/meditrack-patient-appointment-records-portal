@@ -9,3 +9,8 @@ export const findUserByEmail=async(email:string)=>{
     const result=await pool.query('SELECT * FROM users WHERE email=$1',[email]);
     return result.rows[0];
 }
+
+export const findUserById=async(id:string)=>{
+    const result=await pool.query('SELECT name,email,role FROM users WHERE id=$1',[id]);
+    return result.rows[0];
+}
