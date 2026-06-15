@@ -13,8 +13,9 @@ export const verifyToken=(req:Request,res:Response,next:NextFunction)=>{
 
     try{
         //decode the user payload
-        const decoded=jwt.verify(token,process.env.JWT_SECRET!)
-
+        const decoded=jwt.verify(token,process.env.JWT_SECRET!);
+        (req as any).user=decoded;
+        next();
     }catch(err){
         console.error(err);
         res.status(403).json({error:"Invalid Token"});

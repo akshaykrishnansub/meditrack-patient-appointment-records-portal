@@ -1,7 +1,14 @@
 import type {Request,Response} from 'express'
-import { createUser, findUserByEmail } from '../models/auth.model.js';
+import { createUser, findUserByEmail, findUserById } from '../models/auth.model.js';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+
+interface AuthRequest extends Request{
+    user?:{
+        id:string,
+        role:string
+    }
+}
 
 export const registerUser=async(req:Request,res:Response)=>{
 
@@ -61,6 +68,23 @@ export const login=async(req:Request,res:Response)=>{
 
         return res.json({message:"Login Successful",token,user:{id:user.id,name:user.name}})
 
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:'Internal Server Error'});
+    }
+}
+
+export const getProfile=async(req:AuthRequest,res:Response)=>{
+    try{
+        const userId=req.user?.id;
+        if(!userId){
+            return res.status(401).json({error:'Authentication Failed'});
+        }
+        const user=await findUserById(userId);
+        if(!user){
+            return res.status(404).json({error:'User Not Found'});
+        }
+        return res.json(user);
     }catch(err){
         console.error(err);
         res.status(500).json({error:'Internal Server Error'});
