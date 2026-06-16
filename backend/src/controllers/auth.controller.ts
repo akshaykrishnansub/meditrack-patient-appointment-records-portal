@@ -13,7 +13,7 @@ interface AuthRequest extends Request{
 export const registerUser=async(req:Request,res:Response)=>{
 
     //Destructuring
-    const {name,email,password,role} = req.body;
+    const {name,email,password} = req.body;
     try{
         //Check if user already exists
         const existingUser=await findUserByEmail(email);
@@ -25,13 +25,13 @@ export const registerUser=async(req:Request,res:Response)=>{
         const hashedPassword=await bcrypt.hash(password,10);
 
         //Creating new user
-        const newUser=await createUser(name,email,hashedPassword,role);
+        const newUser=await createUser(name,email,hashedPassword,"PATIENT");
 
         //Generating Token
         const token=jwt.sign({id:newUser.id},process.env.JWT_SECRET!,{expiresIn:'1d'})
 
         //return the success message
-        return res.status(201).json({message:'User Registered successfully'});
+        return res.status(201).json({message:'User Registered successfully',token});
         
     }catch(err){
         console.error(err);
@@ -56,7 +56,7 @@ export const login=async(req:Request,res:Response)=>{
         }
 
         //generate token
-        const token=jwt.sign({id:user.id},process.env.JWT_SECRET!,{expiresIn:'1d'});
+        const token=jwt.sign({id:user.id,role:user.role},process.env.JWT_SECRET!,{expiresIn:'1d'});
 
         //store the token as a cookie
         res.cookie('token',token,{
