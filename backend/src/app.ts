@@ -4,6 +4,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.routes.js'
 import testRoutes from './routes/test.routes.js'
 import cookieParser from 'cookie-parser';
+import appointmentRoutes from './routes/appointment.routes.js'
 
 const app:Application=express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use("/api/auth",authRoutes);
 app.use("/api/test",testRoutes);
+app.use("/api/appointments",appointmentRoutes)
 
 
 app.get("/",(req:Request,res:Response)=>{
