@@ -1,5 +1,5 @@
 import type {Request,Response} from "express";
-import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, getAppointmentsByPatientId } from "../models/appointment.model.js";
+import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, getAppointmentsByPatientId, rescheduleAppointment, updateStatus } from "../models/appointment.model.js";
 
 interface AuthRequest extends Request{
     user?:{
@@ -37,5 +37,42 @@ export const getAppointments=async(req:AuthRequest,res:Response)=>{
     }catch(err){
         console.error(err);
         res.status(500).json({error:"Internal Server Error"});
+    }
+}
+
+//Approve appointment
+export const approveAppointment=async(req:AuthRequest,res:Response)=>{
+    try{
+        const {id}=req.params;
+        const updated=await updateStatus(id as string,"APPROVED");
+        return res.json(updated);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server Error"});
+    }
+}
+
+//Cancel appointment
+export const cancelAppointment=async(req:AuthRequest,res:Response)=>{
+    try{
+        const {id}=req.params;
+        const updated=await updateStatus(id as string,"CANCELLED");
+        return res.json(updated);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server Error"});
+    }
+}
+
+//Reschedule
+export const reschedule=async(req:AuthRequest,res:Response)=>{
+    try{
+        const {id}=req.params;
+        const {datetime}=req.body;
+        const updated=await rescheduleAppointment(id as string,datetime);
+        return res.json(updated);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:'Internal Server Error'});
     }
 }

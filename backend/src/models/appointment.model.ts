@@ -24,3 +24,15 @@ export const getAppointmentsByDoctorId=async(doctorId:string)=>{
     const result=await pool.query('SELECT * from appointment WHERE doctorId=$1 ORDER BY datetime DESC',[doctorId]);
     return result.rows;
 }
+
+//UPDATE appointment status (approve or cancel)
+export const updateStatus=async(id:string, status:string)=>{
+    const result=await pool.query('UPDATE appointment SET status=$1 WHERE id=$2 RETURNING *',[status,id]);
+    return result.rows[0];
+}
+
+//RESCHEDULE appointment
+export const rescheduleAppointment=async(id:string,datetime:string)=>{
+    const result=await pool.query("UPDATE appointment SET datetime=$1,status='RESCHEDULED' WHERE id=$2 RETURNING *",[datetime,id]);
+    return result.rows[0];
+}
