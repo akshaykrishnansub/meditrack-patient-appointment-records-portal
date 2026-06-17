@@ -1,5 +1,5 @@
 import type {Request,Response} from "express";
-import { createAppointment } from "../models/appointment.model.js";
+import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, getAppointmentsByPatientId } from "../models/appointment.model.js";
 
 interface AuthRequest extends Request{
     user?:{
@@ -18,5 +18,24 @@ export const bookAppointment=async(req:AuthRequest,res:Response)=>{
     }catch(err){
         console.error(err);
         res.status(500).json({error:'Internal Server Error'});
+    }
+}
+
+//GET Appointments(RBAC)
+export const getAppointments=async(req:AuthRequest,res:Response)=>{
+    try{
+        const {id,role}=req.user!;
+        let data;
+        if(role==="PATIENT"){
+            data=await getAppointmentsByPatientId(id);
+        }else if(role==="DOCTOR"){
+            data=await getAppointmentsByDoctorId(id);
+        }else{
+            data=await getAllAppointments();
+        }
+        return res.json(data);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server Error"});
     }
 }
