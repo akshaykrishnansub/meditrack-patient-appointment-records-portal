@@ -1,10 +1,11 @@
 import React from 'react'
+import Link from 'next/link'
 
 const Register = () => {
   return (
     <div className='min-h-screen flex justify-center items-center bg-gray-50'>
         <div className='w-full max-w-md'>
-            <h1 className='text-4xl font-bold mb-2 text-center'>MediTrack</h1>
+            <h1 className='text-4xl font-bold mb-2 text-center'>Medi<span className='text-green-600'>Track</span></h1>
             <h2 className='text-2xl font-semibold mb-2 text-center'>Create Your Account</h2>
             <p className='text-gray-600 text-center mb-6'>Join meditrack to manage your health with ease</p>
             <div className='bg-white border rounded-lg shadow-2xl p-8'>
@@ -40,6 +41,9 @@ const Register = () => {
                         <button type="submit" className='text-white font-bold bg-green-700 w-full p-2 rounded'>Register</button>
                     </div>
                 </form>
+                <div className='text-center'>
+                    <p>Already a Member? <Link href="/login" className='underline text-green-700'>Click Here to Sign In</Link></p>
+                </div>
             </div>
         </div>
     </div>
