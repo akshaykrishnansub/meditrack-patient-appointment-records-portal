@@ -1,5 +1,5 @@
 import type {Request,Response} from "express";
-import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, getAppointmentsByPatientId, rescheduleAppointment, updateStatus } from "../models/appointment.model.js";
+import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, getAppointmentsByPatientId, rescheduleAppointment, updateStatus, checkDoctorAvailability } from "../models/appointment.model.js";
 
 interface AuthRequest extends Request{
     user?:{
@@ -13,6 +13,12 @@ export const bookAppointment=async(req:AuthRequest,res:Response)=>{
     try{
         const patientId=req.user!.id;
         const {doctorId,datetime}=req.body;
+
+        //checking doctor availability
+        const available=await checkDoctorAvailability(doctorId,datetime);
+        if(!available){
+            return res.status(409).json({error:'Doctor Not available at this time'});
+        }
         const appointment=await createAppointment(patientId,doctorId,datetime);
         return res.status(201).json(appointment);
     }catch(err){

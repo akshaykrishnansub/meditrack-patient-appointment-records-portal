@@ -36,3 +36,9 @@ export const rescheduleAppointment=async(id:string,datetime:string)=>{
     const result=await pool.query("UPDATE appointment SET datetime=$1,status='RESCHEDULED' WHERE id=$2 RETURNING *",[datetime,id]);
     return result.rows[0];
 }
+
+//Checking doctor availability
+export const checkDoctorAvailability=async(doctorId:string,datetime:string)=>{
+    const result=await pool.query("SELECT * from appointment WHERE doctorId=$1 AND datetime=$2 AND status!='CANCELLED'",[doctorId,datetime]);
+    return result.rows.length===0;
+}
