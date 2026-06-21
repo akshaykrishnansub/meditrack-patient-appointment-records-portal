@@ -1,7 +1,14 @@
 import type { Request,Response,NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 
-export const verifyToken=(req:Request,res:Response,next:NextFunction)=>{
+export interface AuthRequest extends Request{
+    user?:{
+        id:string,
+        role:string
+    }
+}
+
+export const verifyToken=(req:AuthRequest,res:Response,next:NextFunction)=>{
 
     //Read token from cookies
     const token=req.cookies.token;
@@ -13,9 +20,9 @@ export const verifyToken=(req:Request,res:Response,next:NextFunction)=>{
 
     try{
         //decode the user payload
-        const decoded=jwt.verify(token,process.env.JWT_SECRET!);
+        const decoded=jwt.verify(token,process.env.JWT_SECRET!) as {id:string,role:string};
         console.log(decoded);
-        (req as any).user=decoded;
+        req.user=decoded;
         next();
     }catch(err){
         console.error(err);

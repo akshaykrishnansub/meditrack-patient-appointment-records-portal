@@ -1,4 +1,4 @@
-import Router from "express"
+import {Router} from "express"
 import { verifyToken } from "../middleware/auth.middleware.js";
 import { authorizeRoles } from "../middleware/rbac.middleware.js";
 import { approveAppointment, bookAppointment, cancelAppointment, getAppointments, reschedule } from "../controllers/appointment.controller.js";

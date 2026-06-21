@@ -1,8 +1,9 @@
 import type { Request,Response,NextFunction } from "express"
+import type { AuthRequest } from "./auth.middleware.js";
 
 export const authorizeRoles=(...allowedRoles:string[])=>{
-    return (req:Request,res:Response,next:NextFunction)=>{
-        const user=(req as any).user;
+    return (req:AuthRequest,res:Response,next:NextFunction)=>{
+        const user=req.user;
         if(!user){
             return res.status(401).json({error:'Authentication required'});
         }

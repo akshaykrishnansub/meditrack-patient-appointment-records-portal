@@ -1,7 +1,65 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import Link from 'next/link'
+import { useAuth } from '@/context/AuthContext'
+import { useRouter } from 'next/navigation'
 
 const Login = () => {
+
+  const {login}=useAuth();
+  const router=useRouter();
+
+  const [formData,setFormData]=useState({email:"",password:""});
+
+  const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
+      const name=e.target.name;
+      const value=e.target.value;
+      setFormData({
+        ...formData,
+        [name]:value
+      })
+  }
+
+  const handleSubmit=async(e:React.FormEvent<HTMLFormElement>)=>{
+    e.preventDefault();
+    try{
+      const res=await fetch("http://localhost:5000/api/auth/login",{
+        method:"POST",
+        credentials:"include",
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          email:formData.email,
+          password:formData.password
+        })
+      })
+      const data=await res.json();
+      if(!res.ok){
+        alert(data.error || "Login Failed");
+        return;
+      }
+      login(data.token,data.user);
+
+      if(data.user.role==="PATIENT"){
+        router.push("/dashboard/patient");
+      }
+
+      if(data.user.role==="DOCTOR"){
+        router.push("/dashboard/doctor");
+      }
+
+      if(data.user.role==="ADMIN"){
+        router.push("/dashboard/admin");
+      }
+
+    }catch(err){
+      console.error(err);
+      alert("Something went wrong");
+    }
+  }
+
+
   return (
     <div className='min-h-screen flex justify-center items-center bg-gray-50'>
       <div className='w-full max-w-md'>
@@ -9,16 +67,22 @@ const Login = () => {
         <h2 className='text-center mb-2 font-semibold text-2xl'>Welcome Back</h2>
         <p className='text-center text-gray-600 mb-6'>Login to your account to continue</p>
         <div className='bg-white border rounded-lg shadow-2xl p-8'>
-          <form action="">
+          <form onSubmit={handleSubmit}>
             <div className='mb-5'>
               <label htmlFor="Email">Email</label>
-              <input type="email" 
+              <input type="email"
+              name="email"
+              onChange={handleChange}
+              value={formData.email}
               className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600'
               placeholder='Enter your email' />
             </div>
             <div className='mb-5'>
               <label htmlFor="Password">Password</label>
               <input type="password"
+              name="password"
+              onChange={handleChange}
+              value={formData.password}
               className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600'
               placeholder='Enter your Password' />
             </div>
