@@ -61,8 +61,8 @@ export const login=async(req:Request,res:Response)=>{
         //store the token as a cookie
         res.cookie('token',token,{
             httpOnly:true,
-            secure:true,
-            sameSite:"none",
+            secure:false,
+            sameSite:"lax",
             maxAge:1*24*60*60*1000
         })
 
@@ -84,7 +84,7 @@ export const getProfile=async(req:AuthRequest,res:Response)=>{
         if(!user){
             return res.status(404).json({error:'User Not Found'});
         }
-        return res.json(user);
+        return res.json({user});
     }catch(err){
         console.error(err);
         res.status(500).json({error:'Internal Server Error'});

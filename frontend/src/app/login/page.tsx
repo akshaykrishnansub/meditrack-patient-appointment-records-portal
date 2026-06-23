@@ -5,8 +5,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 
 const Login = () => {
-
-  const {login}=useAuth();
+  const {checkAuth}=useAuth();
   const router=useRouter();
 
   const [formData,setFormData]=useState({email:"",password:""});
@@ -39,19 +38,10 @@ const Login = () => {
         alert(data.error || "Login Failed");
         return;
       }
-      login(data.token,data.user);
 
-      if(data.user.role==="PATIENT"){
-        router.push("/dashboard/patient");
-      }
-
-      if(data.user.role==="DOCTOR"){
-        router.push("/dashboard/doctor");
-      }
-
-      if(data.user.role==="ADMIN"){
-        router.push("/dashboard/admin");
-      }
+      await checkAuth();
+      const role=data.user.role.toLowerCase();
+      router.push(`/dashboard/${role}`)
 
     }catch(err){
       console.error(err);

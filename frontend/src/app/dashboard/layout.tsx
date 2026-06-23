@@ -4,15 +4,20 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function DashboardLayout({children}:{children:React.ReactNode}){
-    const {user}=useAuth();
+    const {user,loading}=useAuth();
     const router=useRouter();
 
     useEffect(()=>{
+        if(loading)
+            return;
         if(!user){
             router.replace("/login");
-            return;
         }
-    },[user]);
+    },[user,loading,router]);
+
+    if(loading){
+        return <div>Loading...</div>
+    }
 
     if(!user){
         return null;
