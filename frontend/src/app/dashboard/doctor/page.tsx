@@ -1,9 +1,15 @@
+"use client"
 import React from 'react'
 
-const Doctor = () => {
+const DoctorDashboard = () => {
   return (
-    <div>Doctor</div>
+    <div className='bg-gray-100 flex'>
+      {/*sidebar*/}
+      <aside className='min-h-screen w-64 bg-white'>
+
+      </aside>
+    </div>
   )
 }
 
-export default Doctor
+export default DoctorDashboard
