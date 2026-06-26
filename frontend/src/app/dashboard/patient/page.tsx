@@ -1,7 +1,12 @@
+"use client"
 import React from 'react'
 import Link from 'next/link'
+import { useAuth } from '@/context/AuthContext'
+import { useRouter } from 'next/navigation';
 
 const PatientDashboard = () => {
+  const {logout}=useAuth();
+  const router=useRouter();
   return (
     <div className='bg-gray-100 flex'>
       {/* sidebar */}

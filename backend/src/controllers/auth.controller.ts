@@ -90,3 +90,18 @@ export const getProfile=async(req:AuthRequest,res:Response)=>{
         res.status(500).json({error:'Internal Server Error'});
     }
 }
+
+export const logout=(req:Request,res:Response)=>{
+    try{
+        res.clearCookie('token',{
+            path:"/",
+            httpOnly:true,
+            secure:false,
+            sameSite:"lax"
+        })
+        res.json({message:"Logged out Successfully"});
+    }catch(err){
+        console.error(err);
+        res.status(500).json("Internal Server Error");
+    }
+}

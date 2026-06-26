@@ -10,7 +10,7 @@ interface User{
 
 interface AuthContextType{
     user:User |null;
-    logout:()=>void;
+    logout:()=>Promise<void>;
     loading:boolean;
     checkAuth:()=>Promise<void>
 }
@@ -25,12 +25,12 @@ const [loading,setLoading]=useState(true);
 
 //Logout
 const logout=async()=>{
-    setUser(null);
 
     await fetch("http://localhost:5000/api/auth/logout",{
         method:"POST",
         credentials:"include"
     })
+    setUser(null);
 }
 
 //check auth on refresh

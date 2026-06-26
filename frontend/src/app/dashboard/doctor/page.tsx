@@ -1,8 +1,18 @@
 "use client"
+import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 const DoctorDashboard = () => {
+  const {logout}=useAuth();
+  const router=useRouter();
+
+  const handleLogout=async()=>{
+    await logout();
+    router.push("/login");
+  }
+
   return (
     <div className='bg-gray-100 flex'>
       {/*sidebar*/}
@@ -13,7 +23,7 @@ const DoctorDashboard = () => {
           <Link href="/dashboard/doctor/records" className='block font-bold p-2 rounded hover:bg-green-200'>Patient Records</Link>
           <Link href="/dashboard/doctor/messages" className='block font-bold p-2 rounded hover:bg-green-200'>Messages</Link>
           <Link href="/dashboard/doctor/profile" className='block font-bold p-2 rounded hover:bg-green-200'>Doctor Profile</Link>
-          <button className='mt-auto bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600'>Logout</button>
+          <button onClick={handleLogout} className='mt-auto bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Logout</button>
         </nav>
       </aside>
       <main className='flex-1 p-8'>
