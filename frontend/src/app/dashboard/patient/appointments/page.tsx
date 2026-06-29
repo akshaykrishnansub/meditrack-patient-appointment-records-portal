@@ -32,6 +32,29 @@ const Appointment = () => {
     fetchAppointments();
   },[]);
 
+  const cancelAppointment=async(id:string)=>{
+    try{
+      const res=await fetch(`http://localhost:5000/api/appointments/${id}/cancel`,{
+        method:"PATCH",
+        credentials:"include"
+      })
+      const data=await res.json();
+      if(!res.ok){
+        alert(data.error || "Failed to cancel appointment");
+        return;
+      }
+
+      setAppointments((prev:any)=>
+      prev.map((appt:any)=>
+      appt.id===id?{...appt,status:"CANCELLED"}:appt
+      )
+    );
+    }catch(err){
+      console.error(err);
+      alert("Something went wrong");
+    }
+  }
+
   const handleLogout=async()=>{
     await logout();
     router.push("/login");
@@ -56,7 +79,7 @@ const Appointment = () => {
         <div className='mt-4'>
           <Link href="/dashboard/patient/appointments/book" className='text-white font-bold text-xl px-4 py-2 bg-green-900 rounded'>+ Book Appointment</Link>
         </div>
-          <div className='bg-white mb-8 p-6 mt-6 rounded-lg'>
+          <div className='bg-white mb-8 p-6 mt-6 rounded-lg shadow'>
             {appointments.length===0?(
               <p className='text-gray-500'>No Appointments Found</p>
             ):(
@@ -65,9 +88,9 @@ const Appointment = () => {
                   <p className='text-xl font-bold mt-2'>Doctor Name: <span className='font-normal'>{appointment.name}</span></p>
                   <p className='text-xl font-bold mt-2'>Date of Appointment: <span className='font-normal'>{appointment.datetime?.split("T")[0]}</span></p>
                   <p className='text-xl font-bold mt-2'>Time of Appointment: <span className='font-normal'>{new Date(appointment.datetime).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",hour12:true,timeZone:"Asia/Kolkata"})}</span></p>
-                  <p className='text-xl font-bold mt-2'>Appointment Status: <span className='text-yellow-800 font-normal'>{appointment.status}</span></p>
+                  <p className='text-xl font-bold mt-2'>Appointment Status: <span className={`font-normal ${appointment.status==="PENDING"?"text-yellow-600":appointment.status==="CANCELLED"?"text-red-600":"text-green-600"}`}>{appointment.status}</span></p>
                   {appointment.status==="PENDING" &&(
-                    <button className='mt-4 text-white bg-red-600 hover:bg-red-500 px-4 py-2 rounded cursor-pointer font-bold'>Cancel Appointment</button>
+                    <button onClick={()=>cancelAppointment(appointment.id)} className='mt-4 text-white bg-red-600 hover:bg-red-500 px-4 py-2 rounded cursor-pointer font-bold'>Cancel Appointment</button>
                   )}
                 </div>
               ))
