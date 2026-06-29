@@ -2,11 +2,35 @@
 import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Appointment = () => {
   const {logout}=useAuth();
   const router=useRouter();
+
+  const [appointments,setAppointments]=useState([]);
+
+  const fetchAppointments=async()=>{
+    try{
+      const res=await fetch('http://localhost:5000/api/appointments',{
+        credentials:"include"
+      })
+
+      const data=await res.json();
+      if(!res.ok){
+        alert(data.error);
+        return;
+      }
+      setAppointments(data);
+    }catch(err){
+      console.error(err);
+      alert("Something went wrong");
+    }
+  }
+
+  useEffect(()=>{
+    fetchAppointments();
+  },[]);
 
   const handleLogout=async()=>{
     await logout();
@@ -32,12 +56,22 @@ const Appointment = () => {
         <div className='mt-4'>
           <Link href="/dashboard/patient/appointments/book" className='text-white font-bold text-xl px-4 py-2 bg-green-900 rounded'>+ Book Appointment</Link>
         </div>
-          <div className='bg-white mb-8 p-6 mt-6'>
-            <p className='text-xl font-bold mt-2'>Doctor Name: <span className='font-normal'>Dr. Mohan</span></p>
-            <p className='text-xl font-bold mt-2'>Date of Appointment: <span className='font-normal'>28-07-2026</span></p>
-            <p className='text-xl font-bold mt-2'>Time of Appointment: <span className='font-normal'>10:00 AM</span></p>
-            <p className='text-xl font-bold mt-2'>Appointment Status: <span className='text-yellow-800 font-normal'>PENDING</span></p>
-            <button className='mt-4 text-white bg-red-600 hover:bg-red-500 px-4 py-2'>Cancel Appointment</button>
+          <div className='bg-white mb-8 p-6 mt-6 rounded-lg'>
+            {appointments.length===0?(
+              <p className='text-gray-500'>No Appointments Found</p>
+            ):(
+              appointments.map((appointment:any)=>(
+                <div key={appointment.id} className='mb-6 border-b pb-4'>
+                  <p className='text-xl font-bold mt-2'>Doctor Name: <span className='font-normal'>{appointment.name}</span></p>
+                  <p className='text-xl font-bold mt-2'>Date of Appointment: <span className='font-normal'>{appointment.datetime?.split("T")[0]}</span></p>
+                  <p className='text-xl font-bold mt-2'>Time of Appointment: <span className='font-normal'>{new Date(appointment.datetime).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",hour12:true,timeZone:"Asia/Kolkata"})}</span></p>
+                  <p className='text-xl font-bold mt-2'>Appointment Status: <span className='text-yellow-800 font-normal'>{appointment.status}</span></p>
+                  {appointment.status==="PENDING" &&(
+                    <button className='mt-4 text-white bg-red-600 hover:bg-red-500 px-4 py-2 rounded cursor-pointer font-bold'>Cancel Appointment</button>
+                  )}
+                </div>
+              ))
+            )}
           </div>
       </main>
     </div>

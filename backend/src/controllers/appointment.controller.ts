@@ -1,5 +1,5 @@
 import type {Request,Response} from "express";
-import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, getAppointmentsByPatientId, rescheduleAppointment, updateStatus, checkDoctorAvailability } from "../models/appointment.model.js";
+import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, rescheduleAppointment, updateStatus, checkDoctorAvailability, getPatientAppointmentWithDoctorName } from "../models/appointment.model.js";
 
 interface AuthRequest extends Request{
     user?:{
@@ -33,7 +33,7 @@ export const getAppointments=async(req:AuthRequest,res:Response)=>{
         const {id,role}=req.user!;
         let data;
         if(role==="PATIENT"){
-            data=await getAppointmentsByPatientId(id);
+            data=await getPatientAppointmentWithDoctorName(id);
         }else if(role==="DOCTOR"){
             data=await getAppointmentsByDoctorId(id);
         }else{

@@ -42,3 +42,9 @@ export const checkDoctorAvailability=async(doctorId:string,datetime:string)=>{
     const result=await pool.query("SELECT * from appointment WHERE doctorId=$1 AND datetime=$2 AND status!='CANCELLED'",[doctorId,datetime]);
     return result.rows.length===0;
 }
+
+//Get appointment details with doctor name
+export const getPatientAppointmentWithDoctorName=async(patientId:string)=>{
+    const result=await pool.query('SELECT appointment.id,users.name,appointment.datetime,appointment.status FROM appointment JOIN users ON appointment.doctorId=users.id WHERE appointment.patientId=$1',[patientId]);
+    return result.rows;
+}

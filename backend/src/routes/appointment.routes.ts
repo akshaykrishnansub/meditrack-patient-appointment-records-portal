@@ -6,7 +6,7 @@ import { approveAppointment, bookAppointment, cancelAppointment, getAppointments
 const router=Router();
 
 router.post("/",verifyToken,authorizeRoles("PATIENT"),bookAppointment);
-router.get("/",verifyToken,getAppointments);
+router.get("/",verifyToken,authorizeRoles("PATIENT","DOCTOR","ADMIN"),getAppointments);
 router.patch("/:id/cancel",verifyToken,authorizeRoles("PATIENT","DOCTOR"),cancelAppointment);
 router.patch("/:id/approve",verifyToken,authorizeRoles("DOCTOR"),approveAppointment);
 router.patch("/:id/reschedule",verifyToken,authorizeRoles("DOCTOR"),reschedule)
