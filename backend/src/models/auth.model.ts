@@ -14,3 +14,8 @@ export const findUserById=async(id:string)=>{
     const result=await pool.query('SELECT name,email,role FROM users WHERE id=$1',[id]);
     return result.rows[0];
 }
+
+export const getAllDoctors=async()=>{
+    const result=await pool.query("SELECT id,name,email FROM users WHERE role='DOCTOR' ORDER BY name");
+    return result.rows;
+}

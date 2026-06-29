@@ -1,5 +1,5 @@
 import type {Request,Response} from 'express'
-import { createUser, findUserByEmail, findUserById } from '../models/auth.model.js';
+import { createUser, findUserByEmail, findUserById, getAllDoctors } from '../models/auth.model.js';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
@@ -103,5 +103,15 @@ export const logout=(req:Request,res:Response)=>{
     }catch(err){
         console.error(err);
         res.status(500).json("Internal Server Error");
+    }
+}
+
+export const getDoctors=async(req:Request,res:Response)=>{
+    try{
+        const doctors=await getAllDoctors();
+        res.json(doctors);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server Error"});
     }
 }
