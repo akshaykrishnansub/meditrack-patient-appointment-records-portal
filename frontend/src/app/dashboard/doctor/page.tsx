@@ -2,11 +2,37 @@
 import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const DoctorDashboard = () => {
   const {logout}=useAuth();
   const router=useRouter();
+
+  const [profile,setProfile]=useState<any>(null);
+
+  const fetchProfile=async()=>{
+    try{
+      const res=await fetch("http://localhost:5000/api/auth/me",{
+        credentials:"include"
+      })
+
+      const data=await res.json();
+      console.log(data.user);
+      if(!res.ok){
+        alert(data.error);
+        return;
+      }
+
+      setProfile(data.user);
+    }catch(err){
+      console.error(err);
+      alert("Something went wrong");
+    }
+  }
+
+  useEffect(()=>{
+    fetchProfile();
+  },[]);
 
   const handleLogout=async()=>{
     await logout();
@@ -20,6 +46,7 @@ const DoctorDashboard = () => {
         <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
         <nav className='space-y-4'>
           <Link href="/dashboard/doctor" className='block font-bold p-2 rounded hover:bg-green-200'>Doctor Dashboard</Link>
+          <Link href="/dashboard/doctor/appointments" className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
           <Link href="/dashboard/doctor/records" className='block font-bold p-2 rounded hover:bg-green-200'>Patient Records</Link>
           <Link href="/dashboard/doctor/messages" className='block font-bold p-2 rounded hover:bg-green-200'>Messages</Link>
           <Link href="/dashboard/doctor/profile" className='block font-bold p-2 rounded hover:bg-green-200'>Doctor Profile</Link>
@@ -29,7 +56,7 @@ const DoctorDashboard = () => {
       <main className='flex-1 p-8'>
         {/*Welcome doctor section */}
         <div className='mb-8'>
-          <h1 className='text-3xl font-bold'>Welcome, Doctor Name</h1>
+          <h1 className='text-3xl font-bold'>Welcome, {profile?.name}</h1>
           <p className='mt-4'>View, Approve, Reschedule, Cancel Appointments and View Patient Records</p>
         </div>
         {/*Stats section */}

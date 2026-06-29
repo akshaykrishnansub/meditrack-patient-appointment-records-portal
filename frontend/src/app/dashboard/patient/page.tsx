@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation';
@@ -7,6 +7,25 @@ import { useRouter } from 'next/navigation';
 const PatientDashboard = () => {
   const {logout}=useAuth();
   const router=useRouter();
+
+  const [profile,setProfile]=useState<any>(null);
+
+  const fetchPatientProfile=async()=>{
+    const res=await fetch("http://localhost:5000/api/auth/me",{
+      credentials:"include"
+    })
+    const data=await res.json();
+    if(!res.ok){
+      alert(data.error);
+      return;
+    }
+    setProfile(data.user);
+    console.log(data);
+  }
+
+  useEffect(()=>{
+    fetchPatientProfile();
+  },[]);
 
   const handleLogout=async()=>{
     await logout();
@@ -29,7 +48,7 @@ const PatientDashboard = () => {
       <main className='flex-1 p-8'>
         {/*Welcome section */}
         <div className='mb-8'>
-          <h1 className='text-3xl font-bold'>Welcome, Patient Name</h1>
+          <h1 className='text-3xl font-bold'>Welcome, {profile?.name}</h1>
           <p className='mt-4'>Manage appointments and medical records</p>
         </div>
         {/*Stats section */}
