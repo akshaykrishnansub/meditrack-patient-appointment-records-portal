@@ -9,6 +9,7 @@ const DoctorDashboard = () => {
   const router=useRouter();
 
   const [profile,setProfile]=useState<any>(null);
+  const [appointments,setAppointments]=useState<any[]>([]);
 
   const fetchProfile=async()=>{
     try{
@@ -30,14 +31,48 @@ const DoctorDashboard = () => {
     }
   }
 
+  const fetchAppointments=async()=>{
+    try{
+      const res=await fetch("http://localhost:5000/api/appointments",{
+        "credentials":"include"
+      })
+
+      const data=await res.json();
+      if(!res.ok){
+        alert(data.error);
+        return;
+      }
+      console.log(data);
+      setAppointments(data);
+    }catch(err){
+      console.error(err);
+      alert("Something went wrong");
+    }
+  }
+
   useEffect(()=>{
     fetchProfile();
+    fetchAppointments();
   },[]);
 
   const handleLogout=async()=>{
     await logout();
     router.push("/login");
   }
+
+  const today=new Date().toDateString();
+
+  const todaysAppointments=appointments.filter((appointment:any)=>{
+    return(
+      new Date(appointment.datetime).toDateString()===today && appointment.status !=="CANCELLED"
+    );
+  });
+
+  const pendingAppointments=appointments.filter((appointment:any)=>{
+    return(
+      appointment.status==="PENDING"
+    )
+  })
 
   return (
     <div className='bg-gray-100 flex'>
@@ -63,11 +98,11 @@ const DoctorDashboard = () => {
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
           <div className='bg-white p-6 shadow rounded'>
             <h3 className='text-gray-600'>Today's appointments</h3>
-            <p className='text-3xl font-bold mt-2'>8</p>
+            <p className='text-3xl font-bold mt-2'>{todaysAppointments.length}</p>
           </div>
           <div className='bg-white p-6 shadow rounded'>
             <h3 className='text-gray-600'>Pending Approvals</h3>
-            <p className='text-3xl font-bold mt-2'>3</p>
+            <p className='text-3xl font-bold mt-2'>{pendingAppointments.length}</p>
           </div>
           <div className='bg-white p-6 shadow rounded'>
             <h3 className='text-gray-600'>Reschedules</h3>

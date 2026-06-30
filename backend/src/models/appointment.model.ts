@@ -21,7 +21,7 @@ export const getAppointmentsByPatientId=async(patientId:string)=>{
 
 //GET appointment by doctor
 export const getAppointmentsByDoctorId=async(doctorId:string)=>{
-    const result=await pool.query('SELECT * from appointment WHERE doctorId=$1 ORDER BY datetime DESC',[doctorId]);
+    const result=await pool.query('SELECT appointment.id,users.name,appointment.datetime,appointment.status FROM appointment JOIN users ON appointment.patientId=users.id WHERE appointment.doctorId=$1 ORDER BY appointment.datetime ASC',[doctorId]);
     return result.rows;
 }
 
