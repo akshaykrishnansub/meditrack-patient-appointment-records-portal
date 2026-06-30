@@ -99,7 +99,7 @@ const PatientDashboard = () => {
           <h3 className='text-xl font-semibold mb-4'>Upcoming Appointment</h3>
           <p><b>Doctor:</b>{" "}{nextAppointment?.name}</p>
           <p><b>Date:</b>{" "}{nextAppointment?new Date(nextAppointment.datetime).toLocaleDateString():"No upcoming appointments"}</p>
-          <p><b>Time:</b>{" "}{nextAppointment?new Date(nextAppointment.datetime).toLocaleDateString([],{hour:"2-digit",minute:"2-digit"}):"-"}</p>
+          <p><b>Time:</b>{" "}{nextAppointment?new Date(nextAppointment.datetime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"-"}</p>
           <p><b>Status:</b>{" "}{nextAppointment?.status}</p>
         </div>
         {/*Quick Actions */}

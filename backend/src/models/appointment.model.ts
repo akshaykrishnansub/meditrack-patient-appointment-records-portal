@@ -9,7 +9,7 @@ export const createAppointment=async(patientId:string,doctorId:string,datetime:s
 
 //GET all (admin)
 export const getAllAppointments=async()=>{
-    const result=await pool.query('SELECT * from appointment ORDER BY datetime DESC');
+    const result=await pool.query('SELECT * from appointment ORDER BY datetime ASC');
     return result.rows;
 }
 
@@ -45,6 +45,6 @@ export const checkDoctorAvailability=async(doctorId:string,datetime:string)=>{
 
 //Get appointment details with doctor name
 export const getPatientAppointmentWithDoctorName=async(patientId:string)=>{
-    const result=await pool.query('SELECT appointment.id,users.name,appointment.datetime,appointment.status FROM appointment JOIN users ON appointment.doctorId=users.id WHERE appointment.patientId=$1',[patientId]);
+    const result=await pool.query('SELECT appointment.id,users.name,appointment.datetime,appointment.status FROM appointment JOIN users ON appointment.doctorId=users.id WHERE appointment.patientId=$1 ORDER BY appointment.datetime ASC',[patientId]);
     return result.rows;
 }

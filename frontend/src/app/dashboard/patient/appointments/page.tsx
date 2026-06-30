@@ -88,7 +88,7 @@ const Appointment = () => {
                   <p className='text-xl font-bold mt-2'>Doctor Name: <span className='font-normal'>{appointment.name}</span></p>
                   <p className='text-xl font-bold mt-2'>Date of Appointment: <span className='font-normal'>{appointment.datetime?.split("T")[0]}</span></p>
                   <p className='text-xl font-bold mt-2'>Time of Appointment: <span className='font-normal'>{new Date(appointment.datetime).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",hour12:true,timeZone:"Asia/Kolkata"})}</span></p>
-                  <p className='text-xl font-bold mt-2'>Appointment Status: <span className={`font-normal ${appointment.status==="PENDING"?"text-yellow-600":appointment.status==="CANCELLED"?"text-red-600":"text-green-600"}`}>{appointment.status}</span></p>
+                  <p className='text-xl font-bold mt-2'>Appointment Status:{" "}<span className={`font-normal ${appointment.status === "PENDING"? "text-yellow-600": appointment.status === "CANCELLED"? "text-red-600": "text-green-600"}`}>{appointment.status}</span></p>
                   {appointment.status==="PENDING" &&(
                     <button onClick={()=>cancelAppointment(appointment.id)} className='mt-4 text-white bg-red-600 hover:bg-red-500 px-4 py-2 rounded cursor-pointer font-bold'>Cancel Appointment</button>
                   )}

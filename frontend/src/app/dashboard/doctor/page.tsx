@@ -31,6 +31,51 @@ const DoctorDashboard = () => {
     }
   }
 
+  const handleApprove=async(id:string)=>{
+    try{
+      const res=await fetch(`http://localhost:5000/api/appointments/${id}/approve`,{
+        method:"PATCH",
+        credentials:"include"
+      })
+
+      const data=await res.json();
+      if(!res.ok){
+        alert(data.error);
+        return;
+      }
+
+      alert("Appointment Approved");
+
+      fetchAppointments();
+
+    }catch(err){
+      console.error(err);
+      alert("Something went wrong");
+    }
+  }
+
+  const handleCancel=async(id:string)=>{
+    try{
+      const res=await fetch(`http://localhost:5000/api/appointments/${id}/cancel`,{
+        method:"PATCH",
+        credentials:"include"
+      })
+
+      const data=await res.json();
+      if(!res.ok){
+        alert(data.error);
+        return;
+      }
+
+      alert("Appointment Cancelled");
+      fetchAppointments();
+
+    }catch(err){
+      console.error(err);
+      alert("Something went wrong");
+    }
+  }
+
   const fetchAppointments=async()=>{
     try{
       const res=await fetch("http://localhost:5000/api/appointments",{
@@ -63,6 +108,7 @@ const DoctorDashboard = () => {
   const today=new Date().toDateString();
 
   const todaysAppointments=appointments.filter((appointment:any)=>{
+    const appointmentTime=new Date(appointment.datetime);
     return(
       new Date(appointment.datetime).toDateString()===today && appointment.status !=="CANCELLED"
     );
@@ -112,36 +158,22 @@ const DoctorDashboard = () => {
         <div className='bg-white p-6 rounded-lg shadow mb-8'>
           <h3 className='text-2xl font-bold'>Pending Requests</h3>
           <div className='grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'>
-            <div className='bg-white p-6 shadow rounded mt-2 hover:border border-green-800'>
-              <p className='text-xl font-semibold'>Patient Name:</p>
-              <p className='text-xl font-semibold'>Date:</p>
-              <p className='text-xl font-semibold'>Time:</p>
+            {pendingAppointments.length===0?(
+              <p className='mt-4 text-xl font-medium'>No Pending Requests Left</p>
+            ):(
+              pendingAppointments.map((appointment:any)=>(
+              <div key={appointment.id} className='bg-white p-6 shadow rounded mt-2 hover:border border-green-800'>
+              <p className='text-xl font-semibold'>Patient Name: <span className='font-normal text-xl'>{appointment.name}</span></p>
+              <p className='text-xl font-semibold'>Date:{" "}<span className='font-normal text-xl'>{new Date(appointment.datetime).toLocaleDateString()}</span></p>
+              <p className='text-xl font-semibold'>Time:{" "}<span className='font-normal text-xl'>{new Date(appointment.datetime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</span></p>
               <div className='mt-4 flex flex-col lg:flex-row gap-2'>
-                <button className='bg-green-700 text-white font-bold p-2 rounded'>Approve</button>
+                <button onClick={()=>handleApprove(appointment.id)}className='bg-green-700 text-white font-bold p-2 rounded'>Approve</button>
                 <button className='bg-yellow-600 text-white font-bold p-2 rounded'>Reschedule</button>
-                <button className='bg-red-700 text-white font-bold p-2 rounded'>Cancel</button>
+                <button onClick={()=>handleCancel(appointment.id)} className='bg-red-700 text-white font-bold p-2 rounded'>Cancel</button>
               </div>
             </div>
-            <div className='bg-white p-6 shadow rounded mt-2 hover:border border-green-800'>
-              <p className='text-xl font-semibold'>Patient Name:</p>
-              <p className='text-xl font-semibold'>Date:</p>
-              <p className='text-xl font-semibold'>Time:</p>
-              <div className='mt-4 flex flex-col lg:flex-row gap-2'>
-                <button className='bg-green-700 text-white font-bold p-2 rounded'>Approve</button>
-                <button className='bg-yellow-600 text-white font-bold p-2 rounded'>Reschedule</button>
-                <button className='bg-red-700 text-white font-bold p-2 rounded'>Cancel</button>
-              </div>
-            </div>
-            <div className='bg-white p-6 shadow rounded mt-2 hover:border border-green-800'>
-              <p className='text-xl font-semibold'>Patient Name:</p>
-              <p className='text-xl font-semibold'>Date:</p>
-              <p className='text-xl font-semibold'>Time:</p>
-              <div className='mt-4 flex flex-col lg:flex-row gap-2'>
-                <button className='bg-green-700 text-white font-bold p-2 rounded'>Approve</button>
-                <button className='bg-yellow-600 text-white font-bold p-2 rounded'>Reschedule</button>
-                <button className='bg-red-700 text-white font-bold p-2 rounded'>Cancel</button>
-              </div>
-            </div>
+            ))
+            )}
           </div>
         </div>
         <div className='bg-white mb-8 p-6 rounded-lg shadow'>
