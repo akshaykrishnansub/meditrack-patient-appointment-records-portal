@@ -143,7 +143,7 @@ const DoctorAppointments = () => {
                   <p className='text-xl font-bold mt-2'>Patient Name:{" "}<span className='text-xl font-normal'>{appointment.name}</span></p>
                   <p className='text-xl font-bold mt-2'>Appointment Date:{" "}<span className='text-xl font-normal'>{new Date(appointment.datetime).toLocaleDateString()}</span></p>
                   <p className='text-xl font-bold mt-2'>Appointment Time:{" "}<span className='text-xl font-normal'>{new Date(appointment.datetime).toLocaleTimeString("en-IN",{"hour":"2-digit","minute":"2-digit"})}</span></p>
-                  <p className='text-xl font-bold mt-2'>Appointment Status:{" "}<span className={`text-xl font-normal ${appointment.status === "PENDING"? "text-yellow-600": appointment.status === "CANCELLED"? "text-red-600": "text-green-600"}`}>{appointment.status}</span></p>
+                  <p className='text-xl font-bold mt-2'>Appointment Status:{" "}<span className={`text-xl font-normal ${appointment.status === "PENDING"? "text-yellow-600": appointment.status === "CANCELLED"? "text-red-600":appointment.status==="RESCHEDULED"?"text-green-950":"text-green-600"}`}>{appointment.status}</span></p>
                   {appointment.status==="PENDING" && (
                     <div className='flex gap-2 mt-2'>
                       <button className='bg-green-700 text-white font-bold p-2 rounded'>Approve</button>
