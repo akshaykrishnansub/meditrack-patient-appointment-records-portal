@@ -1,0 +1,16 @@
+import pool from '../db/connection.js';
+
+export const createMedicalRecord=async(userId:string,filePath:string,description:string)=>{
+    const result=await pool.query(`INSERT into medicalrecord(userId,filePath,description) VALUES($1,$2,$3) RETURNING *`,[userId,filePath,description]);
+    return result.rows[0];
+}
+
+export const getMedicalRecordsByUserId=async(userId:string)=>{
+    const result=await pool.query(`SELECT * from medicalrecord WHERE userId=$1 ORDER BY uploadedAt DESC`,[userId]);
+    return result.rows;
+}
+
+export const deleteMedicalRecord=async(id:string)=>{
+    const result=await pool.query(`DELETE from medicalrecord WHERE id=$1 RETURNING *`,[id]);
+    return result.rows[0];
+}
