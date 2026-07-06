@@ -1,5 +1,5 @@
 import type {Request,Response} from 'express';
-import { createMedicalRecord, deleteMedicalRecord, getMedicalRecordsByUserId } from '../models/medicalrecord.model.js';
+import { createMedicalRecord, deleteMedicalRecord, getMedicalRecordsByDoctorId, getMedicalRecordsByUserId } from '../models/medicalrecord.model.js';
 
 interface AuthRequest extends Request{
     user?:{
@@ -49,5 +49,16 @@ export const removeMedicalRecord=async(req:AuthRequest,res:Response)=>{
     }catch(err){
         console.error(err);
         res.status(500).json({error:'Internal Server Error'});
+    }
+}
+
+export const getDoctorMedicalRecords=async(req:AuthRequest,res:Response)=>{
+    try{
+        const doctorId=req.user!.id;
+        const records=await getMedicalRecordsByDoctorId(doctorId);
+        return res.json(records);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server Error"});
     }
 }

@@ -10,6 +10,7 @@ const PatientRecords = () => {
     const router=useRouter();
 
     const fileInputRef=useRef<HTMLInputElement>(null)
+    const [records,setRecords]=useState<any[]>([]);
     const [profile,setProfile]=useState<any>(null);
     const [selectedFile,setSelectedFile]=useState<File | null>(null);
     const [description,setDescription]=useState<string>("");
@@ -33,11 +34,57 @@ const PatientRecords = () => {
             alert("Something went wrong");
         }
     }
+
+    const fetchPatientRecords=async()=>{
+        try{
+            const res=await fetch("http://localhost:5000/api/records",{
+                credentials:"include"
+            })
+
+            const data=await res.json();
+            if(!res.ok){
+                alert(data.error);
+                return;
+            }
+            setRecords(data);
+            console.log(records);
+        }catch(err){
+            console.error(err);
+            alert("Something went wrong");
+        }
+    }
     
     useEffect(()=>{
         fetchPatientProfile();
+        fetchPatientRecords();
     },[])
 
+    const handleDelete=async(id:string)=>{
+        const confirmDelete=window.confirm("Are you sure you want to delete this medical record?");
+        if(!confirmDelete)
+            return;
+        try{
+            const res=await fetch(`http://localhost:5000/api/records/${id}`,{
+                method:"DELETE",
+                credentials:"include"
+            })
+            const data=await res.json();
+            if(!res.ok){
+                alert(data.error);
+                return;
+            }
+            alert("Record Deleted successfully");
+            fetchPatientRecords();
+        }catch(err){
+            console.error(err);
+            alert("Something went wrong");
+        }
+    }
+
+    const handleView=(filePath:string)=>{
+        window.open(`http://localhost:5000/${filePath}`,"_blank")
+
+    }
 
     const handleUpload=async()=>{
         if(!selectedFile){
@@ -71,13 +118,16 @@ const PatientRecords = () => {
                 }
             )
             console.log(res.data);
-            alert("Medical Record Upload Successfully")
-            setSelectedFile(null);
-            setDescription("");
-            setUploadProgress(0);
-            if(fileInputRef.current){
-                fileInputRef.current.value="";
-            }
+            setUploadProgress(100);
+            setTimeout(()=>{
+                setSelectedFile(null);
+                setDescription("");
+                setUploadProgress(0);
+                if(fileInputRef.current){
+                    fileInputRef.current.value="";
+                }
+            },1000)
+        fetchPatientRecords();
         }catch(err:any){
             console.error(err);
             alert(err.response?.data?.error || "Something went wrong");
@@ -146,7 +196,20 @@ const PatientRecords = () => {
                 </div>
                 <div className='bg-white shadow rounded-lg p-6 mt-8'>
                     <h1 className='text-2xl font-semibold mb-4'>Your Uploaded Records</h1>
-                    <p className="text-gray-500">No records uploaded yet.</p>
+                    {records.length===0?(
+                        <p className="text-gray-500">No records uploaded yet.</p>
+                    ):(
+                        records.map((record:any)=>(
+                            <div key={record.id} className='border rounded p-4 mb-4'>
+                                <p className='text-2xl font-bold'>Description:{" "}<span className='font-normal'>{record.description}</span></p>
+                                <p className='text-2xl font-bold'>Uploaded At:{" "}<span className='font-normal'>{new Date(record.uploadedat).toLocaleDateString()}</span></p>
+                                <div className='mt-4 flex gap-2'>
+                                    <button onClick={()=>handleView(record.filepath)} className='bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer'>View</button>
+                                    <button onClick={()=>handleDelete(record.id)} className='bg-red-700 text-white px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Delete</button>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </main>

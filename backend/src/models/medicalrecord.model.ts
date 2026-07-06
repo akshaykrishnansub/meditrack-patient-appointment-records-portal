@@ -14,3 +14,8 @@ export const deleteMedicalRecord=async(id:string)=>{
     const result=await pool.query(`DELETE from medicalrecord WHERE id=$1 RETURNING *`,[id]);
     return result.rows[0];
 }
+
+export const getMedicalRecordsByDoctorId=async(doctorId:string)=>{
+    const result=await pool.query(`SELECT DISTINCT medicalrecord.id,medicalrecord.filePath,medicalrecord.description,medicalrecord.uploadedAt,users.name AS patientName FROM medicalrecord JOIN appointment ON medicalrecord.userId=appointment.patientId JOIN users ON medicalrecord.userId=users.id WHERE appointment.doctorId=$1 ORDER BY medicalrecord.uploadedAt DESC`,[doctorId]);
+    return result.rows;
+}
