@@ -2,12 +2,14 @@
 import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+import axios from 'axios';
 
 const PatientRecords = () => {
     const {logout}=useAuth();
     const router=useRouter();
 
+    const fileInputRef=useRef<HTMLInputElement>(null)
     const [profile,setProfile]=useState<any>(null);
     const [selectedFile,setSelectedFile]=useState<File | null>(null);
     const [description,setDescription]=useState<string>("");
@@ -35,6 +37,52 @@ const PatientRecords = () => {
     useEffect(()=>{
         fetchPatientProfile();
     },[])
+
+
+    const handleUpload=async()=>{
+        if(!selectedFile){
+            alert("Please choose a file");
+            return;
+        }
+
+        if(!description.trim()){
+            alert("Please enter a description");
+            return;
+        }
+
+        const formData=new FormData();
+        formData.append("record",selectedFile);
+        formData.append("description",description);
+
+        try{
+            const res=await axios.post(
+                "http://localhost:5000/api/records/upload",
+                formData,{
+                    withCredentials:true,
+                    headers:{
+                        "Content-Type":"multipart/form-data"
+                    },
+                    onUploadProgress:(ProgressEvent)=>{
+                        const percentCompleted=Math.round(
+                            (ProgressEvent.loaded*100)/(ProgressEvent.total || 1)
+                        )
+                        setUploadProgress(percentCompleted);
+                    }
+                }
+            )
+            console.log(res.data);
+            alert("Medical Record Upload Successfully")
+            setSelectedFile(null);
+            setDescription("");
+            setUploadProgress(0);
+            if(fileInputRef.current){
+                fileInputRef.current.value="";
+            }
+        }catch(err:any){
+            console.error(err);
+            alert(err.response?.data?.error || "Something went wrong");
+        }
+    }
 
     const handleLogout=async()=>{
         await logout();
@@ -64,6 +112,7 @@ const PatientRecords = () => {
                     <div className='mb-4'>
                         <label className='block font-semibold mb-2'>Choose File</label>
                         <input type="file" 
+                        ref={fileInputRef}
                         accept='.pdf,.jpg,.jpeg,.png' 
                         onChange={(e)=>{
                             if(e.target.files){
@@ -93,7 +142,7 @@ const PatientRecords = () => {
                         <p className='text-sm text-gray-700 mt-1'>{uploadProgress}%</p>
                     </div>
                     {/*Upload Button */}
-                    <button className='w-full bg-green-700 text-white px-4 py-2 rounded hover:bg-green-600 cursor-pointer'>Upload</button>
+                    <button onClick={handleUpload} className='w-full bg-green-700 text-white px-4 py-2 rounded hover:bg-green-600 cursor-pointer'>Upload</button>
                 </div>
                 <div className='bg-white shadow rounded-lg p-6 mt-8'>
                     <h1 className='text-2xl font-semibold mb-4'>Your Uploaded Records</h1>
