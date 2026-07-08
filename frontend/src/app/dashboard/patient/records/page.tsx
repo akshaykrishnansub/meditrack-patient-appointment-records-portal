@@ -81,8 +81,21 @@ const PatientRecords = () => {
         }
     }
 
-    const handleView=(filePath:string)=>{
-        window.open(`http://localhost:5000/${filePath}`,"_blank")
+    const handleView=async(id:string)=>{
+        try{
+            const res=await fetch(`http://localhost:5000/api/records/view/${id}`,{
+                credentials:"include"
+            })
+            const data=await res.json();
+            if(!res.ok){
+                alert(data.error);
+                return;
+            }
+            window.open(data.url,"_blank");
+        }catch(err){
+            console.error(err);
+            alert("Something went wrong");
+        }
 
     }
 
@@ -204,7 +217,7 @@ const PatientRecords = () => {
                                 <p className='text-2xl font-bold'>Description:{" "}<span className='font-normal'>{record.description}</span></p>
                                 <p className='text-2xl font-bold'>Uploaded At:{" "}<span className='font-normal'>{new Date(record.uploadedat).toLocaleDateString()}</span></p>
                                 <div className='mt-4 flex gap-2'>
-                                    <button onClick={()=>handleView(record.filepath)} className='bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer'>View</button>
+                                    <button onClick={()=>handleView(record.id)} className='bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer'>View</button>
                                     <button onClick={()=>handleDelete(record.id)} className='bg-red-700 text-white px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Delete</button>
                                 </div>
                             </div>

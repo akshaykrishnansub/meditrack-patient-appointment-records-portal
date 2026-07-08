@@ -1,5 +1,6 @@
 import type {Request,Response} from 'express';
-import { createMedicalRecord, deleteMedicalRecord, getMedicalRecordsByDoctorId, getMedicalRecordsByUserId } from '../models/medicalrecord.model.js';
+import { createMedicalRecord, deleteMedicalRecord, getMedicalRecordById, getMedicalRecordsByDoctorId, getMedicalRecordsByUserId, isDoctorAssignedToPatient } from '../models/medicalrecord.model.js';
+import storage from '../services/storage/storage.service.js';
 
 interface AuthRequest extends Request{
     user?:{
@@ -15,7 +16,7 @@ export const uploadMedicalRecord=async(req:AuthRequest,res:Response)=>{
         if(!req.file){
             return res.status(400).json({error:'Please upload a file'});
         }
-        const filePath=req.file.path;
+        const filePath=await storage.upload(req.file);
         if(!description){
             return res.status(400).json({error:"Description is required"});
         }
@@ -45,6 +46,7 @@ export const removeMedicalRecord=async(req:AuthRequest,res:Response)=>{
         if(!deleted){
             return res.status(404).json({error:"Medical record not found"});
         }
+        await storage.delete(deleted.filepath);
         return res.json(deleted);
     }catch(err){
         console.error(err);
@@ -60,5 +62,35 @@ export const getDoctorMedicalRecords=async(req:AuthRequest,res:Response)=>{
     }catch(err){
         console.error(err);
         res.status(500).json({error:"Internal Server Error"});
+    }
+}
+
+export const viewMedicalRecord=async(req:AuthRequest,res:Response)=>{
+    try{
+        const {id}=req.params;
+        const record=await getMedicalRecordById(id as string);
+        if(!record){
+            return res.status(404).json({error:'Medical record not found'});
+        }
+
+        //Patient can view their 
+        if(req.user?.role==="PATIENT"){
+            if(record.userid!==req.user.id){
+                return res.status(403).json({error:"Access Denied"});
+            }
+        }
+
+        if(req.user?.role==="DOCTOR"){
+            const assigned=await isDoctorAssignedToPatient(req.user.id,record.id);
+            if(!assigned){
+                return res.status(403).json({error:"Access denied"});
+            }
+        }
+
+        const url=await storage.getFileUrl(record.filepath);
+        return res.json({url});
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Something went wrong"});
     }
 }

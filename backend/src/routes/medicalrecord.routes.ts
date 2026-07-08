@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import { verifyToken } from '../middleware/auth.middleware.js';
 import { authorizeRoles } from '../middleware/rbac.middleware.js';
-import { getMedicalRecords, uploadMedicalRecord,removeMedicalRecord,getDoctorMedicalRecords } from '../controllers/medicalrecord.controller.js';
+import { getMedicalRecords, uploadMedicalRecord,removeMedicalRecord,getDoctorMedicalRecords, viewMedicalRecord } from '../controllers/medicalrecord.controller.js';
 import { upload } from '../middleware/upload.js';
 
 const router=Router();
@@ -14,6 +14,8 @@ router.get("/",verifyToken,authorizeRoles("PATIENT"),getMedicalRecords);
 
 //Doctor- View assigned patient's medical record
 router.get("/doctor",verifyToken,authorizeRoles("DOCTOR"),getDoctorMedicalRecords);
+
+router.get("/view/:id",verifyToken,authorizeRoles("PATIENT","DOCTOR"),viewMedicalRecord);
 
 //Delete Medical Records
 router.delete("/:id",verifyToken,authorizeRoles("PATIENT"),removeMedicalRecord);
