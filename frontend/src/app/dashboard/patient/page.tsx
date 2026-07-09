@@ -1,4 +1,5 @@
 "use client"
+import socket from '@/lib/socket'
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
@@ -44,6 +45,36 @@ const PatientDashboard = () => {
   useEffect(()=>{
     fetchPatientProfile();
     fetchAppointments();
+  },[]);
+
+  useEffect(()=>{
+    if(!profile?.id)
+      return;
+
+    const joinRoom=()=>{
+      socket.emit("join-room",profile.id);
+      console.log("Patient Joined the room",profile.id);
+    }
+
+    if(socket.connected){
+      joinRoom();
+    }else{
+      socket.once("connect",joinRoom)
+    }
+    return ()=>{
+      socket.off("connect",joinRoom);
+    }
+  },[profile])
+
+  useEffect(()=>{
+    socket.on("receive-message",(message)=>{
+      console.log("Patient received the message");
+      console.log(message);
+    })
+
+    return ()=>{
+      socket.off("receive-message");
+    }
   },[]);
 
   const handleLogout=async()=>{

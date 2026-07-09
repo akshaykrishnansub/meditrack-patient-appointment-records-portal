@@ -7,7 +7,7 @@ import testRoutes from './routes/test.routes.js'
 import cookieParser from 'cookie-parser';
 import appointmentRoutes from './routes/appointment.routes.js'
 import medicalRecordRoutes from './routes/medicalrecord.routes.js'
-
+import messageRoutes from './routes/message.routes.js';
 const app:Application=express();
 
 app.use(cors({
@@ -20,8 +20,9 @@ app.use(cookieParser());
 app.use("/uploads",express.static(path.join(process.cwd(),"uploads")));
 app.use("/api/auth",authRoutes);
 app.use("/api/test",testRoutes);
-app.use("/api/appointments",appointmentRoutes)
+app.use("/api/appointments",appointmentRoutes);
 app.use("/api/records",medicalRecordRoutes);
+app.use("/api/messages",messageRoutes);
 
 app.get("/",(req:Request,res:Response)=>{
     res.status(200).json({
