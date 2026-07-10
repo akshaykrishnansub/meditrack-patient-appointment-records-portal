@@ -2,7 +2,8 @@
 import socket from '@/lib/socket';
 import React, { useEffect, useState } from 'react'
 
-const PatientMessages = () => {
+const DoctorMessages = () => {
+    
     const [profile,setProfile]=useState<any>(null);
     const [conversations,setConversations]=useState<any[]>([]);
     const [selectedConversation,setSelectedConversation]=useState<any>(null);
@@ -12,6 +13,7 @@ const PatientMessages = () => {
     const handleSend=()=>{
         if(!content.trim())
             return;
+
         if(!selectedConversation)
             return;
 
@@ -23,7 +25,7 @@ const PatientMessages = () => {
         //Immediately update the UI
         setMessages((prev:any[])=>[
             ...prev,{
-                id: crypto.randomUUID(),
+                id:crypto.randomUUID(),
                 senderid:profile.id,
                 receiverid:selectedConversation.id,
                 content,
@@ -55,7 +57,6 @@ const PatientMessages = () => {
             const res=await fetch("http://localhost:5000/api/messages/conversations",{
                 credentials:"include"
             })
-
             const data=await res.json();
             if(!res.ok){
                 alert(data.error);
@@ -90,9 +91,9 @@ const PatientMessages = () => {
     useEffect(()=>{
         fetchProfile();
         fetchConversations();
-    },[]);
+    },[])
 
-    useEffect(()=>{
+        useEffect(()=>{
     if(!profile?.id)
       return;
 
@@ -127,20 +128,21 @@ const PatientMessages = () => {
 
   return (
     <div className='bg-gray-100 flex'>
-        <aside className='hidden lg:block bg-white min-h-screen w-64 shadow-md p-6'>
+        <aside className='hidden lg:block bg-white min-h-screen shadow-md p-6 w-64'>
             <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
             <p className='text-xl font-semibold mb-4'>Conversations</p>
-            <div className='space-y-2'>
+            <div className='space-y-4'>
                 {conversations.map((conversation)=>(
-                    <div key={conversation.id} 
+                    <div key={conversation.id}
                     onClick={()=>{setSelectedConversation(conversation);fetchMessages(conversation.id)}}
                     className={`p-3 rounded-lg cursor-pointer transition ${
                         selectedConversation?.id===conversation.id?"bg-green-200":"hover:bg-green-100"
                     }`}>
-                        <p className='font-semibold'>Dr.{" "}{conversation.name}</p>
+                        <p className='font-semibold'>{conversation.name}</p>
                     </div>
                 ))}
             </div>
+
         </aside>
         <main className='flex-1 p-8 min-h-screen flex flex-col'>
             {/*Chat Header */}
@@ -150,11 +152,11 @@ const PatientMessages = () => {
             {/*Messages*/}
             <div className='flex-1 overflow-y-auto p-4'>
                 {messages.length===0?(
-                    <p className='text-gray-500'>No Messages yet.</p>
+                    <p className='text-gray-500'>No Messages left.</p>
                 ):(
                     messages.map((message:any)=>{
                         const isMine=message.senderid===profile?.id;
-                        return(
+                        return (
                             <div key={message.id} className={`flex mb-3 ${isMine?"justify-end":"justify-start"}`}>
                                 <div className={`max-w-xs px-4 py-2 rounded-lg ${isMine?"bg-green-600 text-white":"bg-white text-black"}`}>
                                     <p>{message.content}</p>
@@ -165,14 +167,13 @@ const PatientMessages = () => {
                     })
                 )}
             </div>
-            {/*Input */}
             <div className='border-t border-gray-300 p-4 flex gap-3'>
                 <input type="text" value={content} onChange={(e)=>setContent(e.target.value)} placeholder='Type your message here...' className='flex-1 border rounded-lg px-4 py-2 bg-white'/>
-                <button onClick={handleSend} className='bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 cursor-pointer'>Send</button>
+                <button onClick={handleSend} className='bg-green-700 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-green-800'>Send</button>
             </div>
         </main>
     </div>
   )
 }
 
-export default PatientMessages
+export default DoctorMessages

@@ -3,7 +3,6 @@ import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import socket from '@/lib/socket'
 
 const DoctorDashboard = () => {
   const {logout}=useAuth();
@@ -101,36 +100,6 @@ const DoctorDashboard = () => {
     fetchAppointments();
   },[]);
 
-  useEffect(()=>{
-    if(!profile?.id)
-      return;
-    const joinRoom=()=>{
-      socket.emit("join-room",profile.id);
-      console.log("Doctor joined the room",profile.id)
-    }
-
-    if(socket.connected){
-      joinRoom();
-    }else{
-      socket.once("connect",joinRoom);
-    }
-
-    return ()=>{
-      socket.off("connect",joinRoom);
-    }
-
-  },[profile]);
-
-  useEffect(()=>{
-    socket.on("receive-message",(message)=>{
-      console.log("Doctor received the message");
-      console.log(message);
-    })
-
-    return ()=>{
-      socket.off("receive-message");
-    }
-  },[]);
 
   const handleLogout=async()=>{
     await logout();
