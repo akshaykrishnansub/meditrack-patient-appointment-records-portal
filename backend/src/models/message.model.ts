@@ -6,7 +6,7 @@ export const createMessage=async(senderId:string,receiverId:string,content:strin
 }
 
 export const getMessages=async(userId:string,otherUserId:string)=>{
-    const result=await pool.query(`SELECT * from message WHERE (senderId=$1 AND receiverId=$2) OR (senderId=$2 AND receiverId=$1) ORDER BY sentAt DESC`,[userId,otherUserId]);
+    const result=await pool.query(`SELECT * from message WHERE (senderId=$1 AND receiverId=$2) OR (senderId=$2 AND receiverId=$1) ORDER BY sentAt ASC`,[userId,otherUserId]);
     return result.rows;
 }
 
