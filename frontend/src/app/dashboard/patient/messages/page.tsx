@@ -1,4 +1,5 @@
 "use client"
+import socket from '@/lib/socket';
 import React, { useEffect, useState } from 'react'
 
 const PatientMessages = () => {
@@ -7,6 +8,29 @@ const PatientMessages = () => {
     const [selectedConversation,setSelectedConversation]=useState<any>(null);
     const [messages,setMessages]=useState<any[]>([]);
     const [content,setContent]=useState<string>("");
+
+    const handleSend=()=>{
+        if(!content.trim())
+            return;
+        if(!selectedConversation)
+            return;
+
+        socket.emit("send-message",{
+            senderId:profile.id,
+            receiverId:selectedConversation.id,
+            content
+        })
+        //Immediately update the UI
+        setMessages((prev:any[])=>[
+            ...prev,{
+                senderid:profile.id,
+                receiverid:selectedConversation.id,
+                content,
+                sentat:new Date().toISOString()
+            }
+        ])
+        setContent("");
+    }
 
     const fetchProfile=async()=>{
         try{
@@ -100,7 +124,7 @@ const PatientMessages = () => {
                             <div key={message.id} className={`flex mb-3 ${isMine?"justify-end":"justify-start"}`}>
                                 <div className={`max-w-xs px-4 py-2 rounded-lg ${isMine?"bg-green-600 text-white":"bg-white text-black"}`}>
                                     <p>{message.content}</p>
-                                    <p className='text-xs mt-2 opacity-70'>{new Date(message.sentat).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</p>
+                                    <p className='text-xs mt-2 opacity-70'>{new Date(message.sentat).toLocaleDateString("en",{hour:"2-digit",minute:"2-digit"})}</p>
                                 </div>
                             </div>
                         )
@@ -109,8 +133,8 @@ const PatientMessages = () => {
             </div>
             {/*Input */}
             <div className='border-t border-gray-300 p-4 flex gap-3'>
-                <input type="text" placeholder='Type your message here...' className='flex-1 border rounded-lg px-4 py-2 bg-white'/>
-                <button className='bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 cursor-pointer'>Send</button>
+                <input type="text" value={content} onChange={(e)=>setContent(e.target.value)} placeholder='Type your message here...' className='flex-1 border rounded-lg px-4 py-2 bg-white'/>
+                <button onClick={handleSend} className='bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 cursor-pointer'>Send</button>
             </div>
         </main>
     </div>
