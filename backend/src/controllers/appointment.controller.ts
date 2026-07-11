@@ -1,5 +1,6 @@
 import type {Request,Response} from "express";
-import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, rescheduleAppointment, updateStatus, checkDoctorAvailability, getPatientAppointmentWithDoctorName} from "../models/appointment.model.js";
+import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, rescheduleAppointment, updateStatus, checkDoctorAvailability, getPatientAppointmentWithDoctorName, getAppointmentEmailData} from "../models/appointment.model.js";
+import { sendAppointmentBookedEmail } from "../services/email.service.js";
 
 interface AuthRequest extends Request{
     user?:{
@@ -20,6 +21,8 @@ export const bookAppointment=async(req:AuthRequest,res:Response)=>{
             return res.status(409).json({error:'Doctor Not available at this time'});
         }
         const appointment=await createAppointment(patientId,doctorId,datetime);
+        const emailData=await getAppointmentEmailData(appointment.id);
+        await sendAppointmentBookedEmail(emailData.patient_name,emailData.patient_email,emailData.doctor_name,emailData.datetime);
         return res.status(201).json(appointment);
     }catch(err){
         console.error(err);

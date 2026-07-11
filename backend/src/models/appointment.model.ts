@@ -48,3 +48,9 @@ export const getPatientAppointmentWithDoctorName=async(patientId:string)=>{
     const result=await pool.query('SELECT appointment.id,users.name,appointment.datetime,appointment.status FROM appointment JOIN users ON appointment.doctorId=users.id WHERE appointment.patientId=$1 ORDER BY appointment.datetime ASC',[patientId]);
     return result.rows;
 }
+
+//Get Appointment Email Data
+export const getAppointmentEmailData=async(appointmentId:string)=>{
+    const result=await pool.query(`SELECT p.name AS patient_name,p.email AS patient_email,d.name AS doctor_name,a.datetime,a.status FROM appointment a JOIN users p ON a.patientId=p.id JOIN users d ON a.doctorId=d.id WHERE a.id=$1`,[appointmentId]);
+    return result.rows[0];
+}
