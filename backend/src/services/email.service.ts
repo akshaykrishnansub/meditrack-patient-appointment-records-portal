@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import { appointmentBookedTemplate } from '../templates/appointmentBooked.js';
 import { appointApprovedTemplate } from '../templates/appointmentApproved.js';
+import { appointmentCancelledTemplate } from '../templates/appointmentCancelled.js';
 
 const transporter=nodemailer.createTransport({
     service:"gmail",
@@ -39,4 +40,11 @@ export const sendAppointmentApprovedEmail=async(patientName:string,patientEmail:
     const appointmentTime=new Date(datetime).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
     const text=appointApprovedTemplate(patientName,doctorName,appointmentDate,appointmentTime);
     await sendEmail(patientEmail,"Appointment Approved successfully",text);
+}
+
+export const sendAppointmentCancelledEmail=async(patientName:string,patientEmail:string,doctorName:string,datetime:string)=>{
+    const appointmentDate=new Date(datetime).toLocaleDateString();
+    const appointmentTime=new Date(datetime).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+    const text=appointmentCancelledTemplate(patientName,doctorName,appointmentDate,appointmentTime);
+    await sendEmail(patientEmail,"Appointment Cancelled",text);
 }

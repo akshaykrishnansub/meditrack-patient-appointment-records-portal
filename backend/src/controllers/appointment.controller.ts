@@ -1,6 +1,6 @@
 import type {Request,Response} from "express";
 import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, rescheduleAppointment, updateStatus, checkDoctorAvailability, getPatientAppointmentWithDoctorName, getAppointmentEmailData} from "../models/appointment.model.js";
-import { sendAppointmentApprovedEmail, sendAppointmentBookedEmail } from "../services/email.service.js";
+import { sendAppointmentApprovedEmail, sendAppointmentBookedEmail, sendAppointmentCancelledEmail } from "../services/email.service.js";
 
 interface AuthRequest extends Request{
     user?:{
@@ -68,6 +68,8 @@ export const cancelAppointment=async(req:AuthRequest,res:Response)=>{
     try{
         const {id}=req.params;
         const updated=await updateStatus(id as string,"CANCELLED");
+        const emailData=await getAppointmentEmailData(id as string);
+        await sendAppointmentCancelledEmail(emailData.patient_name,emailData.patient_email,emailData.doctor_name,emailData.datetime);
         return res.json(updated);
     }catch(err){
         console.error(err);
