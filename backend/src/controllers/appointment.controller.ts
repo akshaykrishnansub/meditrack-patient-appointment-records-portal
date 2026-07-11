@@ -1,6 +1,6 @@
 import type {Request,Response} from "express";
 import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, rescheduleAppointment, updateStatus, checkDoctorAvailability, getPatientAppointmentWithDoctorName, getAppointmentEmailData} from "../models/appointment.model.js";
-import { sendAppointmentApprovedEmail, sendAppointmentBookedEmail, sendAppointmentCancelledEmail } from "../services/email.service.js";
+import { sendAppointmentApprovedEmail, sendAppointmentBookedEmail, sendAppointmentCancelledEmail, sendAppointmentRescheduledEmail } from "../services/email.service.js";
 
 interface AuthRequest extends Request{
     user?:{
@@ -83,6 +83,8 @@ export const reschedule=async(req:AuthRequest,res:Response)=>{
         const {id}=req.params;
         const {datetime}=req.body;
         const updated=await rescheduleAppointment(id as string,datetime);
+        const emailData=await getAppointmentEmailData(id as string);
+        await sendAppointmentRescheduledEmail(emailData.patient_name,emailData.patient_email,emailData.doctor_name,emailData.datetime);
         return res.json(updated);
     }catch(err){
         console.error(err);
