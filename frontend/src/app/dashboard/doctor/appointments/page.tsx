@@ -32,6 +32,30 @@ const DoctorAppointments = () => {
     }
   }
 
+  const handleApprove=async(id:string)=>{
+    try{
+      const res=await fetch(`http://localhost:5000/api/appointments/${id}/approve`,{
+        method:"PATCH",
+        credentials:"include"
+      })
+
+      const data=await res.json();
+      if(!res.ok){
+        alert(data.error);
+        return;
+      }
+
+      alert("Appointment Approved");
+
+      fetchAppointments();
+
+    }catch(err){
+      console.error(err);
+      alert("Something went wrong");
+    }
+  }
+
+
   const handleCancel=async(id:string)=>{
     try{
       const res=await fetch(`http://localhost:5000/api/appointments/${id}/cancel`,{
@@ -146,7 +170,7 @@ const DoctorAppointments = () => {
                   <p className='text-xl font-bold mt-2'>Appointment Status:{" "}<span className={`text-xl font-normal ${appointment.status === "PENDING"? "text-yellow-600": appointment.status === "CANCELLED"? "text-red-600":appointment.status==="RESCHEDULED"?"text-green-950":"text-green-600"}`}>{appointment.status}</span></p>
                   {appointment.status==="PENDING" && (
                     <div className='flex gap-2 mt-2'>
-                      <button className='bg-green-700 text-white font-bold p-2 rounded'>Approve</button>
+                      <button onClick={()=>handleApprove(appointment.id)} className='bg-green-700 text-white font-bold p-2 rounded cursor-pointer'>Approve</button>
                       <button onClick={()=>openRescheduleModal(appointment.id)} className='bg-yellow-600 text-white font-bold p-2 rounded'>Reschedule</button>
                       <button onClick={()=>handleCancel(appointment.id)} className='bg-red-700 text-white font-bold p-2 rounded cursor-pointer'>Cancel</button>
                     </div>
