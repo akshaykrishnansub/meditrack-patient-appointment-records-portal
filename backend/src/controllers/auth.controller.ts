@@ -1,7 +1,8 @@
 import type {Request,Response} from 'express'
-import { createUser, findUserByEmail, findUserById, getAllDoctors } from '../models/auth.model.js';
+import { createUser, findUserByEmail, findUserById, getAllDoctors, updatePassword } from '../models/auth.model.js';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { sendPasswordResetEmail } from '../services/email.service.js';
 
 interface AuthRequest extends Request{
     user?:{
@@ -110,6 +111,36 @@ export const getDoctors=async(req:Request,res:Response)=>{
     try{
         const doctors=await getAllDoctors();
         res.json(doctors);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server Error"});
+    }
+}
+
+export const forgotPassword=async(req:Request,res:Response)=>{
+    try{
+        const {email}=req.body;
+        const user=await findUserByEmail(email);
+        if(!user){
+            return res.json({message:"If an account with that email exists, a password reset link has been sent."});
+        }
+        const token=jwt.sign({id:user.id},process.env.JWT_SECRET!,{expiresIn:"15m"});
+        const resetLink=`http://localhost:3000/reset-password?token=${token}`;
+        await sendPasswordResetEmail(user.name,user.email,resetLink);
+        return res.json({message:"If an account with that email exists, a password reset link has been sent."});
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server Error"});
+    }
+}
+
+export const resetPassword=async(req:Request,res:Response)=>{
+    try{
+        const {token,password}=req.body;
+        const decodedToken=jwt.verify(token,process.env.JWT_SECRET!) as{id:string};
+        const hashedPassword=await bcrypt.hash(password,10);
+        await updatePassword(decodedToken.id,hashedPassword);
+        return res.json({message:"Password reset successfully"});
     }catch(err){
         console.error(err);
         res.status(500).json({error:"Internal Server Error"});

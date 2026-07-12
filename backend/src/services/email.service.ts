@@ -3,6 +3,7 @@ import { appointmentBookedTemplate } from '../templates/appointmentBooked.js';
 import { appointApprovedTemplate } from '../templates/appointmentApproved.js';
 import { appointmentCancelledTemplate } from '../templates/appointmentCancelled.js';
 import { appointmentRescheduledTemplate } from '../templates/appointmentRescheduled.js';
+import { passwordResetTemplate } from '../templates/passwordReset.js';
 
 const transporter=nodemailer.createTransport({
     service:"gmail",
@@ -55,4 +56,9 @@ export const sendAppointmentRescheduledEmail=async(patientName:string,patientEma
     const appointmentTime=new Date(datetime).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
     const text=appointmentRescheduledTemplate(patientName,doctorName,appointmentDate,appointmentTime);
     await sendEmail(patientEmail,"Appointment Rescheduled",text);
+}
+
+export const sendPasswordResetEmail=async(name:string,email:string,resetLink:string)=>{
+    const text=passwordResetTemplate(name,resetLink);
+    await sendEmail(email,"Reset Your MediTrack Password",text);
 }

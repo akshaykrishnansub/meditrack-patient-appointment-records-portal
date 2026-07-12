@@ -19,3 +19,8 @@ export const getAllDoctors=async()=>{
     const result=await pool.query("SELECT id,name,email FROM users WHERE role='DOCTOR' ORDER BY name");
     return result.rows;
 }
+
+export const updatePassword=async(id:string,password_hash:string)=>{
+    const result=await pool.query(`UPDATE users SET password_hash=$1 WHERE id=$2 RETURNING *`,[password_hash,id]);
+    return result.rows[0];
+}
