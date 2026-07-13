@@ -64,6 +64,7 @@ export const sendAppointmentRescheduledEmail=async(patientName:string,patientEma
 }
 
 export const sendPasswordResetEmail=async(name:string,email:string,resetLink:string)=>{
-    const text=passwordResetTemplate(name,resetLink);
-    await sendEmail(email,"Reset Your MediTrack Password",text);
+    const mail=passwordResetTemplate(name,resetLink);
+    const html=mailGenerator.generate(mail);
+    await sendEmail(email,"Reset Your MediTrack Password",html);
 }
