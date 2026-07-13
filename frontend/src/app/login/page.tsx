@@ -80,6 +80,9 @@ const Login = () => {
               <button type='submit' className='w-full text-white bg-green-700 p-2 rounded hover:bg-green-600 cursor-pointer font-bold'>Login</button>
             </div>
           </form>
+          <div className='flex justify-end mb-4'>
+            <Link href='/forgot-password' className='underline text-blue-600'>Forgot Password?</Link>
+          </div>
           <div>
             <p className='text-center'>Don't have an account yet? <Link href="/register" className='underline text-green-600'>Click here to sign up</Link></p>
           </div>
