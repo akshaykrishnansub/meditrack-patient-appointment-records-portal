@@ -1,20 +1,21 @@
 export const appointmentRescheduledTemplate=(patientName:string,doctorName:string,appointmentDate:string,appointmentTime:string)=>{
-    return `
-    Hello ${patientName},
-    
-    Your appointment has been rescheduled.
-    
-    Doctor Name: Dr. ${doctorName}
-    
-    New Date: ${appointmentDate}
-    
-    New Time: ${appointmentTime}
-    
-    status: RESCHEDULED
-    
-    Please make use of the updated appointment schedule.
-    
-    Thank you
-    
-    MediTrack`;
+    return {
+        body:{
+            name:patientName,
+
+            intro:"Your appointment has been Rescheduled.",
+
+            table:{
+                data:[
+                    {
+                        Doctor: `Dr. ${doctorName}`,
+                        Date: appointmentDate,
+                        Time: appointmentTime,
+                        Status: "RESCHEDULED"
+                    },
+                ],
+            },
+            outro: "Thank you for choosing MediTrack.",
+        },
+    };
 }

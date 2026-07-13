@@ -1,21 +1,21 @@
 export const appointmentCancelledTemplate=(patientName:string,doctorName:string,appointmentDate:string,appointmentTime:string)=>{
-    return `
-    
-    Hello ${patientName},
-    
-    We regret to inform you that your appointment has been cancelled.
-    
-    Doctor: Dr. ${doctorName}
-    
-    Date: ${appointmentDate}
-    
-    Time: ${appointmentTime}
-    
-    Status: CANCELLED
-    
-    If you still require a consultation, please login to MediTrack and book another appointment at your convenience.
-    
-    Thank you,
-    
-    MediTrack`;
+    return {
+        body:{
+            name:patientName,
+
+            intro:"Your appointment has been Cancelled.",
+
+            table:{
+                data:[
+                    {
+                        Doctor: `Dr. ${doctorName}`,
+                        Date: appointmentDate,
+                        Time: appointmentTime,
+                        Status: "CANCELLED"
+                    },
+                ],
+            },
+            outro: "Thank you for choosing MediTrack.",
+        },
+    };
 }
