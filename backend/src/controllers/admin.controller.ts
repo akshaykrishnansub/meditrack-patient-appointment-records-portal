@@ -1,5 +1,5 @@
 import type { Request,Response } from "express";
-import { createDoctor, deleteCancelledAppointments, deleteUser, deleteUserMedicalRecords, deleteUserMessages, getAllUsers, getUserMedicalRecords, hasActiveAppointments } from "../models/admin.model.js";
+import { createDoctor, deleteCancelledAppointments, deleteUser, deleteUserMedicalRecords, deleteUserMessages, findUserByEmailExceptCurrentUser, getAllUsers, getUserById, getUserMedicalRecords, hasActiveAppointments, updateUser } from "../models/admin.model.js";
 import type { AuthRequest } from "../middleware/auth.middleware.js";
 import { findUserByEmail, findUserById } from "../models/auth.model.js";
 import storage from "../services/storage/storage.service.js";
@@ -71,6 +71,42 @@ export const addDoctor=async(req:AuthRequest,res:Response)=>{
         const doctor=await createDoctor(name,email,hashedPassword);
         await sendDoctorWelcomeEmail(name,email,password);
         return res.status(201).json({message:"Doctor created successfully",doctor});
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server Error"});
+    }
+}
+
+export const fetchUserById=async(req:AuthRequest,res:Response)=>{
+    try{
+        const userId=req.params.id;
+        const user=await getUserById(userId as string);
+        if(!user){
+            return res.status(404).json({error:'User not found'});
+        }
+        return res.status(200).json(user);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:'Internal server error'});
+    }
+}
+
+export const updateExisitingUser=async(req:AuthRequest,res:Response)=>{
+    try{
+        const userId=req.params.id;
+        const {name,email}=req.body;
+        const user=await getUserById(userId as string);
+        if(!user){
+            return res.status(404).json({error:"User not found"});
+        }
+
+        const existingEmail=await findUserByEmailExceptCurrentUser(email,userId as string);
+        if(existingEmail){
+            return res.status(400).json({error:"Email already exists"});
+        }
+
+        const updatedUser=await updateUser(userId as string,name,email);
+        return res.status(200).json({message:"User updated successfully",user:updatedUser});
     }catch(err){
         console.error(err);
         res.status(500).json({error:"Internal Server Error"});

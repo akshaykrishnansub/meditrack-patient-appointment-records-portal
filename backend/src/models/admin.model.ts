@@ -39,3 +39,18 @@ export const createDoctor=async(name:string,email:string,password_hash:string)=>
     const result=await pool.query(`INSERT into users (name,email,password_hash,role) VALUES($1,$2,$3,'DOCTOR') RETURNING id,name,email,role`,[name,email,password_hash]);
     return result.rows[0];
 }
+
+export const getUserById=async(id:string)=>{
+    const result=await pool.query(`SELECT id,name,email,role FROM users WHERE id=$1`,[id]);
+    return result.rows[0];
+}
+
+export const updateUser=async(id:string,name:string,email:string)=>{
+    const result=await pool.query(`UPDATE users SET name=$1,email=$2 WHERE id=$3 RETURNING *`,[name,email,id]);
+    return result.rows[0];
+}
+
+export const findUserByEmailExceptCurrentUser=async(email:string,id:string)=>{
+    const result=await pool.query(`SELECT id FROM users WHERE email=$1 AND id!=$2 LIMIT 1`,[email,id]);
+    return result.rows[0];
+}
