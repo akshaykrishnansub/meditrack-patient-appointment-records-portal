@@ -126,8 +126,8 @@ const PatientMessages = () => {
 
 
   return (
-    <div className='bg-gray-100 flex'>
-        <aside className='hidden lg:block bg-white min-h-screen w-64 shadow-md p-6'>
+    <div className='min-h-screen bg-gray-100 flex'>
+        <aside className='hidden lg:block bg-white w-64 shadow-md p-6'>
             <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
             <p className='text-xl font-semibold mb-4'>Conversations</p>
             <div className='space-y-2'>
@@ -142,7 +142,7 @@ const PatientMessages = () => {
                 ))}
             </div>
         </aside>
-        <main className='flex-1 p-8 min-h-screen flex flex-col'>
+        <main className='flex-1 p-8 flex flex-col bg-gray-100'>
             {/*Chat Header */}
             <div className='border-b border-gray-300 p-4'>
                 <h2 className='text-xl font-bold'>{selectedConversation?selectedConversation.name:"Select a conversation"}</h2>
@@ -166,7 +166,7 @@ const PatientMessages = () => {
                 )}
             </div>
             {/*Input */}
-            <div className='border-t border-gray-300 p-4 flex gap-3'>
+            <div className='border-t border-gray-300 p-4 flex gap-3 bg-gray-100'>
                 <input type="text" value={content} onChange={(e)=>setContent(e.target.value)} placeholder='Type your message here...' className='flex-1 border rounded-lg px-4 py-2 bg-white'/>
                 <button onClick={handleSend} className='bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-green-800 cursor-pointer'>Send</button>
             </div>

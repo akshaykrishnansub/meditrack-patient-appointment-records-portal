@@ -96,6 +96,7 @@ const AdminUsers = () => {
             <nav className='space-y-4'>
                 <Link href="/dashboard/admin" className='block font-bold p-2 rounded hover:bg-green-200'>Admin Dashboard</Link>
                 <Link href="/dashboard/admin/users" className='block font-bold p-2 rounded hover:bg-green-200'>Users</Link>
+                <Link href="/dashboard/admin/create-doctor" className='block font-bold p-2 rounded hover:bg-green-200'>Create Doctor</Link>
                 <Link href="/dashboard/admin/appointments" className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
                 <Link href="/dashboard/admin/records" className='block font-bold p-2 rounded hover:bg-green-200'>Medical Records</Link>
                 <Link href="/dashboard/admin/audit-logs" className='block font-bold p-2 rounded hover:bg-green-200'>Audit Logs</Link>
@@ -143,8 +144,9 @@ const AdminUsers = () => {
                                             {user.role==="DOCTOR" &&(<span className='bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold'>DOCTOR</span>)}
                                             {user.role==="ADMIN" &&(<span className='bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold'>ADMIN</span>)}
                                         </td>
-                                        <td className='px-6 py-4 text-left'>
+                                        <td className='px-6 py-4 text-left flex gap-2'>
                                             <button onClick={()=>handleDelete(user.id)} className='bg-red-600 text-white px-4 py-2 hover:bg-red-700 rounded transition cursor-pointer'>Delete</button>
+                                            <button onClick={()=>router.push(`/dashboard/admin/users/edit/${user.id}`)} className='bg-green-900 text-white px-4 py-2 hover:bg-green-800 rounded transition cursor-pointer'>Update</button>
                                         </td>
                                     </tr>
                                 )

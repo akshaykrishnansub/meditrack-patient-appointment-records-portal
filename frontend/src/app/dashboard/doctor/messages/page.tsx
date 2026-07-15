@@ -144,7 +144,7 @@ const DoctorMessages = () => {
             </div>
 
         </aside>
-        <main className='flex-1 p-8 min-h-screen flex flex-col'>
+        <main className='flex-1 p-8 min-h-screen flex flex-col bg-gray-100'>
             {/*Chat Header */}
             <div className='border-b border-gray-300 p-4'>
                 <h2 className='text-xl font-bold'>{selectedConversation?selectedConversation.name:"Select a conversation"}</h2>

@@ -81,7 +81,7 @@ export const viewMedicalRecord=async(req:AuthRequest,res:Response)=>{
         }
 
         if(req.user?.role==="DOCTOR"){
-            const assigned=await isDoctorAssignedToPatient(req.user.id,record.id);
+            const assigned=await isDoctorAssignedToPatient(req.user.id,record.userid);
             if(!assigned){
                 return res.status(403).json({error:"Access denied"});
             }

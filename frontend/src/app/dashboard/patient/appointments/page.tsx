@@ -63,7 +63,7 @@ const Appointment = () => {
 
   return (
     <div className='bg-gray-100 flex'>
-      <aside className='bg-white w-64 min-h-screen shadow p-6'>
+      <aside className='hidden lg:block bg-white w-64 min-h-screen shadow p-6'>
         <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
         <nav className='space-y-4'>
           <Link href="/dashboard/patient" className='block font-bold p-2 rounded hover:bg-green-200'>Patient Dashboard</Link>

@@ -5,6 +5,7 @@ import { appointmentCancelledTemplate } from '../templates/appointmentCancelled.
 import { appointmentRescheduledTemplate } from '../templates/appointmentRescheduled.js';
 import { passwordResetTemplate } from '../templates/passwordReset.js';
 import mailGenerator from '../utils/mailGenerator.js';
+import { doctorWelcomeTemplate } from '../templates/doctorWelcome.js';
 
 const transporter=nodemailer.createTransport({
     service:"gmail",
@@ -67,4 +68,10 @@ export const sendPasswordResetEmail=async(name:string,email:string,resetLink:str
     const mail=passwordResetTemplate(name,resetLink);
     const html=mailGenerator.generate(mail);
     await sendEmail(email,"Reset Your MediTrack Password",html);
+}
+
+export const sendDoctorWelcomeEmail=async(name:string,email:string,password:string)=>{
+    const mail=doctorWelcomeTemplate(name,email,password);
+    const html=mailGenerator.generate(mail);
+    await sendEmail(email,"Welcome to MediTrack-Doctor Account",html)
 }
