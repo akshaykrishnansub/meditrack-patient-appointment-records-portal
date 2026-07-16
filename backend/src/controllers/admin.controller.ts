@@ -5,6 +5,7 @@ import { findUserByEmail, findUserById } from "../models/auth.model.js";
 import storage from "../services/storage/storage.service.js";
 import bcrypt from 'bcrypt'
 import { sendDoctorWelcomeEmail } from "../services/email.service.js";
+import { getAllAppointments } from "../models/admin.model.js";
 
 export const fetchAllUsers=async(req:Request,res:Response)=>{
     try{
@@ -110,5 +111,16 @@ export const updateExisitingUser=async(req:AuthRequest,res:Response)=>{
     }catch(err){
         console.error(err);
         res.status(500).json({error:"Internal Server Error"});
+    }
+}
+
+export const fetchAllAppointments=async(req:AuthRequest,res:Response)=>{
+    try{
+        const appointments=await getAllAppointments();
+        return res.status(200).json(appointments);
+
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:'Internal Server Error'});
     }
 }

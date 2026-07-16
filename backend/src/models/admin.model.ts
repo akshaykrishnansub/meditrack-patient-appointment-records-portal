@@ -50,7 +50,13 @@ export const updateUser=async(id:string,name:string,email:string)=>{
     return result.rows[0];
 }
 
+//to check whether the email is being used by anyone else
 export const findUserByEmailExceptCurrentUser=async(email:string,id:string)=>{
     const result=await pool.query(`SELECT id FROM users WHERE email=$1 AND id!=$2 LIMIT 1`,[email,id]);
     return result.rows[0];
+}
+
+export const getAllAppointments=async()=>{
+    const result=await pool.query(`SELECT a.id,p.name AS patient_name,p.email AS patient_email,d.name AS doctor_name,d.email AS doctor_email,a.datetime,a.status FROM appointment a JOIN users p ON a.patientId=p.id JOIN users d ON a.doctorId=d.id ORDER BY a.datetime ASC`);
+    return result.rows;
 }

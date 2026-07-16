@@ -126,8 +126,8 @@ const PatientMessages = () => {
 
 
   return (
-    <div className='min-h-screen bg-gray-100 flex'>
-        <aside className='hidden lg:block bg-white w-64 shadow-md p-6'>
+    <div className=' bg-gray-100 flex'>
+        <aside className='hidden lg:block min-h-screen bg-white w-64 shadow-md p-6'>
             <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
             <p className='text-xl font-semibold mb-4'>Conversations</p>
             <div className='space-y-2'>
@@ -142,7 +142,7 @@ const PatientMessages = () => {
                 ))}
             </div>
         </aside>
-        <main className='flex-1 p-8 flex flex-col bg-gray-100'>
+        <main className='flex-1 p-8 flex flex-col min-h-screen bg-gray-100'>
             {/*Chat Header */}
             <div className='border-b border-gray-300 p-4'>
                 <h2 className='text-xl font-bold'>{selectedConversation?selectedConversation.name:"Select a conversation"}</h2>

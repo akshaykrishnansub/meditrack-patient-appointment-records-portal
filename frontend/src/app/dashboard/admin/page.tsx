@@ -2,11 +2,33 @@
 import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Admin = () => {
   const {logout}=useAuth();
   const router=useRouter();
+  const [profile,setProfile]=useState<any>(null);
+
+  const fetchProfile=async()=>{
+        try{
+            const res=await fetch("http://localhost:5000/api/auth/me",{
+                credentials:"include"
+            })
+            const data=await res.json();
+            if(!res.ok){
+                alert(data.error);
+                return;
+            }
+            setProfile(data.user);
+        }catch(err){
+            console.error(err);
+            alert("Something went wrong");
+        }
+    }
+
+    useEffect(()=>{
+      fetchProfile();
+    },[])
 
   const handleLogout=async()=>{
     await logout();
@@ -32,7 +54,7 @@ const Admin = () => {
       <main className='flex-1 p-8'>
         {/*Welcome section */}
         <div className='mb-8'>
-          <h1 className='text-3xl font-bold'>Welcome, Admin</h1>
+          <h1 className='text-3xl font-bold'>Welcome,{" "}{profile?.name}</h1>
           <p className='mt-4'>Manage Doctors, Users, Manage Records, Systems Logs</p>
         </div>
         {/*Statistics Section */}
