@@ -106,7 +106,7 @@ const AdminRecords = () => {
   }
 
   return (
-    <div className='bg-gray-100 flex h-dvh overflow-hidden'>
+    <div className='bg-gray-100 flex min-h-screen w-full overflow-x-hidden'>
       <aside className='hidden lg:block min-h-screen bg-white w-64 p-6 shadow'>
         <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
         <nav className='space-y-4'>
@@ -116,12 +116,11 @@ const AdminRecords = () => {
           <Link href="/dashboard/admin/appointments" className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
           <Link href="/dashboard/admin/records" className='block font-bold p-2 rounded hover:bg-green-200'>Medical Records</Link>
           <Link href="/dashboard/admin/audit-logs" className='block font-bold p-2 rounded hover:bg-green-200'>Audit Logs</Link>
-          <Link href="/dashboard/admin/analytics" className='block font-bold p-2 rounded hover:bg-green-200'>Analytics</Link>
           <Link href="/dashboard/admin/profile" className='block font-bold p-2 rounded hover:bg-green-200'>Profile</Link>
           <button onClick={handleLogout} className='mt-auto bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Logout</button>
         </nav>
       </aside>
-      <main className='flex-1 p-8 min-h-screen bg-gray-100'>
+      <main className='flex-1 p-4 md:p-8 min-w-0'>
         <h1 className='text-3xl font-bold mb-4'>Welcome,{" "}{profile?.name}</h1>
         <div className='bg-white shadow-lg rounded-lg p-6'>
           <h1 className='text-2xl font-bold mb-8'>Manage Medical Records</h1>
@@ -182,23 +181,23 @@ const AdminRecords = () => {
                   <div className='space-y-4'>
                     <div>
                       <p className='text-xs text-gray-600'>Description</p>
-                      <p className="text-lg font-semibold">{record.description}</p>
+                      <p className="text-xs font-semibold">{record.description}</p>
                     </div>
                     <div>
                       <p className='text-xs text-gray-600'>Uploaded At</p>
-                      <p className="text-lg font-semibold">{new Date(record.uploadedat).toLocaleDateString()}</p>
+                      <p className="text-xs font-semibold">{new Date(record.uploadedat).toLocaleDateString()}</p>
                     </div>
                     <div>
                       <p className='text-xs text-gray-600'>Patient Name</p>
-                      <p className="text-lg font-semibold">{record.patient_name}</p>
+                      <p className="text-xs font-semibold">{record.patient_name}</p>
                     </div>
                     <div>
                       <p className='text-xs text-gray-600'>Patient Email</p>
-                      <p className="text-lg font-semibold">{record.patient_email}</p>
+                      <p className="text-xs font-semibold">{record.patient_email}</p>
                     </div>
                     <div>
                       <p className='text-xs text-gray-600'>Doctor Name</p>
-                      <p className="text-lg font-semibold">{record.doctor_name}</p>
+                      <p className="text-xs font-semibold">{record.doctor_name}</p>
                     </div>
                     <div className='grid grid-cols-2 gap-3 pt-2'>
                       <button onClick={()=>handleView(record.id)} className='bg-blue-700 text-white rounded-lg hover:bg-blue-600 cursor-pointer'>View</button>

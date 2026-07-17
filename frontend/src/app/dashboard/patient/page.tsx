@@ -10,6 +10,24 @@ const PatientDashboard = () => {
 
   const [profile,setProfile]=useState<any>(null);
   const [appointments,setAppointments]=useState<any[]>([]);
+  const [recordCount,setRecordCount]=useState<number>(0);
+
+  const fetchMedicalRecords=async()=>{
+    try{
+      const res=await fetch("http://localhost:5000/api/records",{
+        credentials:"include"
+      })
+      const data=await res.json();
+      if(!res.ok){
+        alert(data.error);
+        return;
+      }
+      setRecordCount(data.length);
+    }catch(err){
+      console.error(err);
+      alert("Something went wrong");
+    }
+  }
 
   const fetchAppointments=async()=>{
     try{
@@ -44,6 +62,7 @@ const PatientDashboard = () => {
   useEffect(()=>{
     fetchPatientProfile();
     fetchAppointments();
+    fetchMedicalRecords();
   },[]);
 
   const handleLogout=async()=>{
@@ -91,16 +110,22 @@ const PatientDashboard = () => {
           </div>
           <div className='bg-white p-6 shadow rounded'>
             <h3 className='text-gray-600'>Medical Records</h3>
-            <p className='text-3xl font-bold mt-2'>3</p>
+            <p className='text-3xl font-bold mt-2'>{recordCount}</p>
           </div>
         </div>
         {/*Upcoming appointment*/}
         <div className='bg-white p-6 rounded-lg shadow mb-8'>
           <h3 className='text-xl font-semibold mb-4'>Upcoming Appointment</h3>
-          <p><b>Doctor:</b>{" "}{nextAppointment?.name}</p>
-          <p><b>Date:</b>{" "}{nextAppointment?new Date(nextAppointment.datetime).toLocaleDateString():"No upcoming appointments"}</p>
-          <p><b>Time:</b>{" "}{nextAppointment?new Date(nextAppointment.datetime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"-"}</p>
-          <p><b>Status:</b>{" "}{nextAppointment?.status}</p>
+          {nextAppointment?(
+            <>
+            <p><b>Doctor:</b>{" "}{nextAppointment?.name}</p>
+            <p><b>Date:</b>{" "}{nextAppointment?new Date(nextAppointment.datetime).toLocaleDateString():"No upcoming appointments"}</p>
+            <p><b>Time:</b>{" "}{nextAppointment?new Date(nextAppointment.datetime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"-"}</p>
+            <p><b>Status:</b>{" "}{nextAppointment?.status}</p>
+            </>
+          ):(
+            <p className='text-gray-500'>You don't have any upcoming appointments</p>
+          )}
         </div>
         {/*Quick Actions */}
         <div className='bg-white p-6 shadow rounded'>

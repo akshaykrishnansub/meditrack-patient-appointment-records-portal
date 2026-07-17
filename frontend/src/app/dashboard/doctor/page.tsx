@@ -120,6 +120,12 @@ const DoctorDashboard = () => {
     )
   })
 
+  const rescheduledAppointments=appointments.filter((appointment:any)=>{
+    return(
+      appointment.status==="RESCHEDULED"
+    )
+  })
+
   return (
     <div className='bg-gray-100 flex'>
       {/*sidebar*/}
@@ -152,7 +158,7 @@ const DoctorDashboard = () => {
           </div>
           <div className='bg-white p-6 shadow rounded'>
             <h3 className='text-gray-600'>Rescheduled Appointments</h3>
-            <p className='text-3xl font-bold mt-2'>1</p>
+            <p className='text-3xl font-bold mt-2'>{rescheduledAppointments.length}</p>
           </div>
         </div>
         <div className='bg-white p-6 rounded-lg shadow mb-8'>

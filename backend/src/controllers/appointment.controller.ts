@@ -57,6 +57,7 @@ export const approveAppointment=async(req:AuthRequest,res:Response)=>{
         const {id}=req.params;
         const updated=await updateStatus(id as string,"APPROVED");
         const emailData=await getAppointmentEmailData(id as string);
+        await createAuditLog(req.user!.id,"APPROVE_APPOINTMENT",`Appointment approved for ${emailData.patient_name} with Dr. ${emailData.doctor_name} ON ${new Date(emailData.datetime).toLocaleString()}`);
         await sendAppointmentApprovedEmail(emailData.patient_name,emailData.patient_email,emailData.doctor_name,emailData.datetime);
         return res.json(updated);
     }catch(err){
@@ -71,6 +72,7 @@ export const cancelAppointment=async(req:AuthRequest,res:Response)=>{
         const {id}=req.params;
         const updated=await updateStatus(id as string,"CANCELLED");
         const emailData=await getAppointmentEmailData(id as string);
+        await createAuditLog(req.user!.id,"CANCEL_APPOINTMENT",`Appointment Cancelled for ${emailData.patient_name} with Dr. ${emailData.doctor_name} ON ${new Date(emailData.datetime).toLocaleString()}`)
         await sendAppointmentCancelledEmail(emailData.patient_name,emailData.patient_email,emailData.doctor_name,emailData.datetime);
         return res.json(updated);
     }catch(err){
@@ -86,6 +88,7 @@ export const reschedule=async(req:AuthRequest,res:Response)=>{
         const {datetime}=req.body;
         const updated=await rescheduleAppointment(id as string,datetime);
         const emailData=await getAppointmentEmailData(id as string);
+        await createAuditLog(req.user!.id,"RESCHEDULE_APPOINTMENT",`Appointment Rescheduled for ${emailData.patient_name} with Dr. ${emailData.doctor_name} ON ${new Date(emailData.datetime).toLocaleString()}`)
         await sendAppointmentRescheduledEmail(emailData.patient_name,emailData.patient_email,emailData.doctor_name,emailData.datetime);
         return res.json(updated);
     }catch(err){

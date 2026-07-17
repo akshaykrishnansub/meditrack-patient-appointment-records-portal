@@ -75,3 +75,19 @@ export const getMedicalRecordByAdmin=async(id:string)=>{
     const result=await pool.query(`SELECT filepath FROM medicalrecord WHERE id=$1`,[id]);
     return result.rows[0];
 }
+
+export const getDashboardStats=async()=>{
+    const [users,doctors,appointments,records,recentActivity]=await Promise.all([
+        pool.query("SELECT COUNT(*) from users"),
+        pool.query("SELECT COUNT(*) from users where role='DOCTOR'"),
+        pool.query("SELECT COUNT(*) from appointment"),
+        pool.query("SELECT COUNT(*) from medicalrecord "),
+        pool.query(`SELECT id,action,details,createdAt FROM auditlog ORDER BY createdAt DESC LIMIT 5`)
+    ]);
+    return {totalUsers: Number(users.rows[0].count),
+        totalDoctors:Number(doctors.rows[0].count),
+        totalAppointments:Number(appointments.rows[0].count),
+        totalRecords:Number(records.rows[0].count),
+        recentActivity:recentActivity.rows
+    }
+}

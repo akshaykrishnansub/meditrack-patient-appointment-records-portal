@@ -91,7 +91,7 @@ const AdminUsers = () => {
     });
 
   return (
-    <div className='bg-gray-100 flex'>
+    <div className='bg-gray-100 flex min-h-screen w-full overflow-x-hidden'>
         <aside className='hidden lg:block min-h-screen bg-white shadow-md w-64 p-6'>
             <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
             <nav className='space-y-4'>
@@ -101,12 +101,11 @@ const AdminUsers = () => {
                 <Link href="/dashboard/admin/appointments" className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
                 <Link href="/dashboard/admin/records" className='block font-bold p-2 rounded hover:bg-green-200'>Medical Records</Link>
                 <Link href="/dashboard/admin/audit-logs" className='block font-bold p-2 rounded hover:bg-green-200'>Audit Logs</Link>
-                <Link href="/dashboard/admin/analytics" className='block font-bold p-2 rounded hover:bg-green-200'>Analytics</Link>
                 <Link href="/dashboard/admin/profile" className='block font-bold p-2 rounded hover:bg-green-200'>Profile</Link>
                 <button onClick={handleLogout} className='mt-auto bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Logout</button>
             </nav>
         </aside>
-        <main className='flex-1 p-8 min-h-screen bg-gray-100'>
+        <main className='flex-1 md:p-8 p-4 min-w-0'>
             <h1 className='text-3xl font-bold mb-8'>Welcome,{" "}{profile?.name}</h1>
             <div className='bg-white shadow-lg rounded-lg p-6'>
                 <h1 className='text-3xl font-bold mb-6'>Manage Users</h1>
@@ -167,11 +166,11 @@ const AdminUsers = () => {
                                 <div className='space-y-4'>
                                     <div>
                                         <p className='text-xs text-gray-600'>Name</p>
-                                        <p className="text-lg font-semibold">{user.name}</p>
+                                        <p className="text-xs font-semibold">{user.name}</p>
                                     </div>
                                     <div>
                                         <p className='text-xs text-gray-600'>Email</p>
-                                        <p className="text-lg font-semibold">{user.email}</p>
+                                        <p className="text-xs font-semibold">{user.email}</p>
                                     </div>
                                     <div>
                                         <p className='text-xs text-gray-600'>Role</p>

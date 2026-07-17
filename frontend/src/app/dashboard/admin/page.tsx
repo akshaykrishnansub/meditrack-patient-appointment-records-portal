@@ -8,6 +8,24 @@ const Admin = () => {
   const {logout}=useAuth();
   const router=useRouter();
   const [profile,setProfile]=useState<any>(null);
+  const [stats,setStats]=useState<any>(null);
+
+  const fetchDashboardStats=async()=>{
+    try{
+      const res=await fetch("http://localhost:5000/api/admin/dashboard",{
+        credentials:"include"
+      })
+      const data=await res.json();
+      if(!res.ok){
+        alert(data.error);
+        return;
+      }
+      setStats(data);
+    }catch(err){
+      console.error(err);
+      alert("Something went wrong");
+    }
+  }
 
   const fetchProfile=async()=>{
         try{
@@ -28,6 +46,7 @@ const Admin = () => {
 
     useEffect(()=>{
       fetchProfile();
+      fetchDashboardStats();
     },[])
 
   const handleLogout=async()=>{
@@ -36,7 +55,7 @@ const Admin = () => {
   }
 
   return (
-    <div className='bg-gray-100 flex'>
+    <div className='bg-gray-100 flex min-h-screen w-full overflow-x-hidden'>
       <aside className='hidden lg:block min-h-screen bg-white w-64 shadow-md p-6'>
         <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
         <nav className='space-y-4'>
@@ -46,12 +65,11 @@ const Admin = () => {
           <Link href="/dashboard/admin/appointments" className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
           <Link href="/dashboard/admin/records" className='block font-bold p-2 rounded hover:bg-green-200'>Medical Records</Link>
           <Link href="/dashboard/admin/audit-logs" className='block font-bold p-2 rounded hover:bg-green-200'>Audit Logs</Link>
-          <Link href="/dashboard/admin/analytics" className='block font-bold p-2 rounded hover:bg-green-200'>Analytics</Link>
           <Link href="/dashboard/admin/profile" className='block font-bold p-2 rounded hover:bg-green-200'>Profile</Link>
           <button onClick={handleLogout} className='mt-auto bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Logout</button>
         </nav>
       </aside>
-      <main className='flex-1 p-8'>
+      <main className='flex-1 md:p-8 p-4 min-w-0'>
         {/*Welcome section */}
         <div className='mb-8'>
           <h1 className='text-3xl font-bold'>Welcome,{" "}{profile?.name}</h1>
@@ -61,26 +79,33 @@ const Admin = () => {
         <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8'>
           <div className='bg-white p-6 shadow rounded'>
             <h3 className='text-gray-600'>Total Users</h3>
-            <p className='text-3xl font-bold mt-2'>250</p>
+            <p className='text-3xl font-bold mt-2'>{stats?.totalUsers ?? 0}</p>
           </div>
           <div className='bg-white p-6 shadow rounded'>
             <h3 className='text-gray-600'>Total Doctors</h3>
-            <p className='text-3xl font-bold mt-2'>25</p>
+            <p className='text-3xl font-bold mt-2'>{stats?.totalDoctors ?? 0}</p>
           </div>
           <div className='bg-white p-6 shadow rounded'>
             <h3 className='text-gray-600'>Total Appointments</h3>
-            <p className='text-3xl font-bold mt-2'>1200</p>
+            <p className='text-3xl font-bold mt-2'>{stats?.totalAppointments ?? 0}</p>
           </div>
           <div className='bg-white p-6 shadow rounded'>
-            <h3 className='text-gray-600'>Total Doctors</h3>
-            <p className='text-3xl font-bold mt-2'>25</p>
+            <h3 className='text-gray-600'>Total Medical Records</h3>
+            <p className='text-3xl font-bold mt-2'>{stats?.totalRecords ?? 0}</p>
           </div>
         </div>
         <div className='bg-white p-6 rounded-lg shadow mb-8'>
           <h3 className='text-2xl font-bold'>Recent Activity</h3>
-          <p className='text-xl font-medium mt-2'>New Doctor Registered:</p>
-          <p className='text-xl font-medium mt-2'>Appointment Cancelled:</p>
-          <p className='text-xl font-medium mt-2'>Record Uploaded:</p>
+          {stats?.recentActivity?.length===0?(
+            <p>No Recent Activity</p>
+          ):(
+            stats?.recentActivity?.map((log:any)=>(
+              <div key={log.id} className='py-3'>
+                <p className='font-semibold'>{log.action}</p>
+                <p className='text-gray-600'>{log.details}</p>
+              </div>
+            ))
+          )}
         </div>
         <div className='bg-white p-6 shadow rounded-lg mb-8'>
           <h3 className='text-2xl font-bold'>Quick Actions</h3>

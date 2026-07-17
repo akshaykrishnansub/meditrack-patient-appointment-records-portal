@@ -1,5 +1,5 @@
 import type { Request,Response } from "express";
-import { createDoctor, deleteCancelledAppointments, deleteMedicalRecordByAdmin, deleteUser, deleteUserMedicalRecords, deleteUserMessages, findUserByEmailExceptCurrentUser, getAllMedicalRecords, getAllUsers, getMedicalRecordByAdmin, getUserById, getUserMedicalRecords, hasActiveAppointments, updateUser } from "../models/admin.model.js";
+import { createDoctor, deleteCancelledAppointments, deleteMedicalRecordByAdmin, deleteUser, deleteUserMedicalRecords, deleteUserMessages, findUserByEmailExceptCurrentUser, getAllMedicalRecords, getAllUsers, getDashboardStats, getMedicalRecordByAdmin, getUserById, getUserMedicalRecords, hasActiveAppointments, updateUser } from "../models/admin.model.js";
 import type { AuthRequest } from "../middleware/auth.middleware.js";
 import { findUserByEmail, findUserById } from "../models/auth.model.js";
 import storage from "../services/storage/storage.service.js";
@@ -51,6 +51,7 @@ export const removeUser=async(req:AuthRequest,res:Response)=>{
 
         await deleteUserMessages(userId as string);
         await deleteUserMedicalRecords(userId as string);
+        await createAuditLog(req.user!.id,"DELETE_USER",`Deleted ${user.role.toLowerCase()} ${user.name} (${user.email})`)
         await deleteUser(userId as string);
         return res.status(200).json({message:"User Deleted Successfully"});
     }catch(err){
@@ -71,6 +72,7 @@ export const addDoctor=async(req:AuthRequest,res:Response)=>{
         }
         const hashedPassword=await bcrypt.hash(password,10);
         const doctor=await createDoctor(name,email,hashedPassword);
+        await createAuditLog(req.user!.id,"CREATE_DOCTOR",`Created Doctor Account for Dr. ${doctor.name} (${doctor.email})`)
         await sendDoctorWelcomeEmail(name,email,password);
         return res.status(201).json({message:"Doctor created successfully",doctor});
     }catch(err){
@@ -108,6 +110,7 @@ export const updateExisitingUser=async(req:AuthRequest,res:Response)=>{
         }
 
         const updatedUser=await updateUser(userId as string,name,email);
+        await createAuditLog(req.user!.id,"UPDATE_USER",`Updated User ${updatedUser.name} (${updatedUser.email})`)
         return res.status(200).json({message:"User updated successfully",user:updatedUser});
     }catch(err){
         console.error(err);
@@ -165,5 +168,15 @@ export const viewMedicalRecordByAdmin=async(req:AuthRequest,res:Response)=>{
     }catch(err){
         console.error(err);
         res.status(500).json({error:'Internal Server Error'});
+    }
+}
+
+export const dashboardStats=async(req:AuthRequest,res:Response)=>{
+    try{
+        const stats=await getDashboardStats();
+        return res.status(200).json(stats);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server Error"});
     }
 }
