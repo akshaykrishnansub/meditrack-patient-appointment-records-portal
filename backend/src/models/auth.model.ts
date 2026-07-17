@@ -24,3 +24,8 @@ export const updatePassword=async(id:string,password_hash:string)=>{
     const result=await pool.query(`UPDATE users SET password_hash=$1 WHERE id=$2 RETURNING *`,[password_hash,id]);
     return result.rows[0];
 }
+
+export const updateUserProfile=async(id:string,name:string,email:string)=>{
+    const result=await pool.query(`UPDATE users SET name=$1,email=$2 WHERE id=$3 RETURNING *`,[name,email,id]);
+    return result.rows[0];
+}

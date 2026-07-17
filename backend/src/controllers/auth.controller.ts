@@ -1,5 +1,5 @@
 import type {Request,Response} from 'express'
-import { createUser, findUserByEmail, findUserById, getAllDoctors, updatePassword } from '../models/auth.model.js';
+import { createUser, findUserByEmail, findUserById, getAllDoctors, updatePassword, updateUserProfile } from '../models/auth.model.js';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { sendPasswordResetEmail } from '../services/email.service.js';
@@ -146,6 +146,27 @@ export const resetPassword=async(req:Request,res:Response)=>{
         const user=await findUserById(decodedToken.id);
         await createAuditLog(decodedToken.id,"PASSWORD_RESET",`${user.name} reset their password`);
         return res.json({message:"Password reset successfully"});
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server Error"});
+    }
+}
+
+export const updateProfile=async(req:AuthRequest,res:Response)=>{
+    try{
+        const userId=req.user?.id;
+        const {name,email}=req.body;
+        if(!userId){
+            return res.status(401).json({error:"Unauthorized"});
+        }
+        if(!name || !email){
+            return res.status(400).json({error:"Name and email are required"});
+        }
+        if(!name.trim() || !email.trim()){
+            return res.status(400).json({error:"Name and email cannot be empty"});
+        }
+        const updatedUser=await updateUserProfile(userId as string,name,email)
+        return res.status(200).json({message:"Profile Updated Succesfully",user:updatedUser});
     }catch(err){
         console.error(err);
         res.status(500).json({error:"Internal Server Error"});
