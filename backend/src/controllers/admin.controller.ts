@@ -1,5 +1,5 @@
 import type { Request,Response } from "express";
-import { createDoctor, deleteCancelledAppointments, deleteUser, deleteUserMedicalRecords, deleteUserMessages, findUserByEmailExceptCurrentUser, getAllUsers, getUserById, getUserMedicalRecords, hasActiveAppointments, updateUser } from "../models/admin.model.js";
+import { createDoctor, deleteCancelledAppointments, deleteMedicalRecordByAdmin, deleteUser, deleteUserMedicalRecords, deleteUserMessages, findUserByEmailExceptCurrentUser, getAllMedicalRecords, getAllUsers, getMedicalRecordByAdmin, getUserById, getUserMedicalRecords, hasActiveAppointments, updateUser } from "../models/admin.model.js";
 import type { AuthRequest } from "../middleware/auth.middleware.js";
 import { findUserByEmail, findUserById } from "../models/auth.model.js";
 import storage from "../services/storage/storage.service.js";
@@ -119,6 +119,45 @@ export const fetchAllAppointments=async(req:AuthRequest,res:Response)=>{
         const appointments=await getAllAppointments();
         return res.status(200).json(appointments);
 
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:'Internal Server Error'});
+    }
+}
+
+export const viewAllMedicalRecords=async(req:AuthRequest,res:Response)=>{
+    try{
+        const records=await getAllMedicalRecords();
+        res.status(200).json(records);
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Internal Server error"});
+    }
+}
+
+export const deleteMedicalRecord=async(req:AuthRequest,res:Response)=>{
+    try{
+        const {id}=req.params;
+        const record=await deleteMedicalRecordByAdmin(id as string);
+        if(!record){
+            res.status(404).json({error:"Medical Record not found"});
+        }
+        res.status(200).json({message:"Medical Record Deleted Successfully"});
+
+    }catch(err){
+        console.error(err);
+    }
+}
+
+export const viewMedicalRecordByAdmin=async(req:AuthRequest,res:Response)=>{
+    try{
+        const {id}=req.params;
+        const record=await getMedicalRecordByAdmin(id as string);
+        if(!record){
+            return res.status(404).json({error:"Medical record not found"});
+        }
+        const url=await storage.getFileUrl(record.filepath);
+        return res.status(200).json({url});
     }catch(err){
         console.error(err);
         res.status(500).json({error:'Internal Server Error'});
