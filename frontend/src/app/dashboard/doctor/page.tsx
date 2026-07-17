@@ -11,6 +11,10 @@ const DoctorDashboard = () => {
   const [profile,setProfile]=useState<any>(null);
   const [appointments,setAppointments]=useState<any[]>([]);
 
+  useEffect(() => {
+    document.title = "Doctor Dashboard | MediTrack";
+  },[]);
+
   const fetchProfile=async()=>{
     try{
       const res=await fetch("http://localhost:5000/api/auth/me",{

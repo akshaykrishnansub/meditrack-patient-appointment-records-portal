@@ -11,6 +11,10 @@ const BookAppointment = () => {
   const [formData,setFormData]=useState({doctorId:"",date:"",time:""})
   const [doctors,setDoctors]=useState([]);
 
+  useEffect(() => {
+    document.title = "Patient Book Appointment | MediTrack";
+  },[]);
+
   useEffect(()=>{
     const fetchDoctors=async()=>{
       const res=await fetch("http://localhost:5000/api/auth/doctor",{

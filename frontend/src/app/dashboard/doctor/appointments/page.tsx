@@ -15,6 +15,10 @@ const DoctorAppointments = () => {
   const [selectedAppointmentId,setSelectedAppointmentId]=useState<string>("");
   const [newDateTime,setNewDateTime]=useState<string>("");
 
+  useEffect(() => {
+    document.title = "Doctor Appointments | MediTrack";
+  },[]);
+
   const fetchDoctorProfile=async()=>{
     try{
       const res=await fetch("http://localhost:5000/api/auth/me",{

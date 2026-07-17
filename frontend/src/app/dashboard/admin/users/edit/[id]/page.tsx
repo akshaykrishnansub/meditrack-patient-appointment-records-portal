@@ -15,6 +15,10 @@ const EditUser = () => {
   const [loading,setLoading]=useState<boolean>(true);
   const {logout}=useAuth();
 
+  useEffect(() => {
+                  document.title = "Admin Edit User | MediTrack";
+                },[]);
+
   const fetchProfile=async()=>{
     try{
       const res=await fetch("http://localhost:5000/api/auth/me",{

@@ -13,6 +13,10 @@ const CreateDoctor = () => {
     const [email,setEmail]=useState<string>("");
     const [password,setPassword]=useState<string>("");
 
+    useEffect(() => {
+        document.title = "Admin Create Doctor | MediTrack";
+    },[]);
+
     const fetchProfile=async()=>{
         try{
             const res=await fetch("http://localhost:5000/api/auth/me",{

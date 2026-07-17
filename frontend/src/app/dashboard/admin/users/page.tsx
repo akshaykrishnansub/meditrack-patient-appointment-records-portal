@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
+
+
 const AdminUsers = () => {
     const {logout}=useAuth();
     const router=useRouter();
@@ -12,6 +14,10 @@ const AdminUsers = () => {
     const [users,setUsers]=useState<any[]>([]);
     const [loading,setLoading]=useState<boolean>(true);
     const [searchTerm,setSearchTerm]=useState<string>("");
+
+    useEffect(() => {
+        document.title = "Admin User Listing | MediTrack";
+    },[]);
 
     const handleDelete=async(id:string)=>{
         const confirmDelete=window.confirm("Are you sure you want to delete this user?");

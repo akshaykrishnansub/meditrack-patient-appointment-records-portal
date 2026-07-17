@@ -14,6 +14,10 @@ const AuditLogs = () => {
     const [search,setSearch]=useState<string>("");
     const [filteredLogs,setFilteredLogs]=useState<any[]>([]);
 
+    useEffect(() => {
+        document.title = "Admin Audit Logs | MediTrack";
+    },[]);
+
     const handleLogout=async()=>{
         await logout();
         router.push("/login");

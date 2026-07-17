@@ -14,6 +14,10 @@ const AdminAppointmentManagement = () => {
   const [loading,setLoading]=useState<boolean>(true);
   const [profile,setProfile]=useState<any>(null);
 
+  useEffect(() => {
+    document.title = "Admin Appointment Management | MediTrack";
+  },[]);
+
   const fetchProfile=async()=>{
         try{
             const res=await fetch("http://localhost:5000/api/auth/me",{

@@ -1,6 +1,6 @@
 "use client"
 import { useRouter, useSearchParams } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const ResetPassword = () => {
     const router=useRouter();
@@ -9,6 +9,10 @@ const ResetPassword = () => {
     const [password,setPassword]=useState<string>("");
     const [confirmPassword,setConfirmPassword]=useState<string>("");
     const [loading,setLoading]=useState<boolean>(false);
+
+    useEffect(() => {
+      document.title = "Reset Password | MediTrack";
+    },[]);
 
     const handleResetPassword=async(e:React.FormEvent<HTMLFormElement>)=>{
       e.preventDefault();

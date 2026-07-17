@@ -12,6 +12,10 @@ const AdminRecords = () => {
   const [loading,setLoading]=useState<boolean>(true);
   const [search,setSearch]=useState<string>("");
 
+  useEffect(() => {
+    document.title = "Admin Medical Records | MediTrack";
+  },[]);
+  
   const fetchProfile=async()=>{
     try{
       const res=await fetch("http://localhost:5000/api/auth/me",{

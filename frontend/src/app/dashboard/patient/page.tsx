@@ -12,6 +12,10 @@ const PatientDashboard = () => {
   const [appointments,setAppointments]=useState<any[]>([]);
   const [recordCount,setRecordCount]=useState<number>(0);
 
+  useEffect(() => {
+    document.title = "Patient Dashboard | MediTrack";
+  },[]);
+
   const fetchMedicalRecords=async()=>{
     try{
       const res=await fetch("http://localhost:5000/api/records",{

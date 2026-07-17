@@ -1,9 +1,13 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 
 const Register = () => {
     const [formData,setFormData]=useState({name:"",email:"",password:"",confirmPassword:""})
+
+    useEffect(() => {
+        document.title = "Registration | MediTrack";
+    },[]);
 
     const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
         const name=e.target.name;

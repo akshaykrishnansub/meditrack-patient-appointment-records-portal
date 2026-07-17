@@ -16,6 +16,10 @@ const PatientRecords = () => {
     const [description,setDescription]=useState<string>("");
     const [uploadProgress,setUploadProgress]=useState<number>(0);
 
+    useEffect(() => {
+        document.title = "Patient Medical Records | MediTrack";
+    },[]);
+
     const fetchPatientProfile=async()=>{
         try{
             const res=await fetch("http://localhost:5000/api/auth/me",{

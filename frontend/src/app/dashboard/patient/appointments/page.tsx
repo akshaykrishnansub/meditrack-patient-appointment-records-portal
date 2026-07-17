@@ -10,6 +10,10 @@ const Appointment = () => {
 
   const [appointments,setAppointments]=useState([]);
 
+  useEffect(() => {
+    document.title = "Patient Appointments | MediTrack";
+  },[]);
+
   const fetchAppointments=async()=>{
     try{
       const res=await fetch('http://localhost:5000/api/appointments',{

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
@@ -9,6 +9,10 @@ const Login = () => {
   const router=useRouter();
 
   const [formData,setFormData]=useState({email:"",password:""});
+
+  useEffect(() => {
+    document.title = "Login | MediTrack";
+  },[]);
 
   const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
       const name=e.target.name;

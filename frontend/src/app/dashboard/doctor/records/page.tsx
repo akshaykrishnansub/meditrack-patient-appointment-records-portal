@@ -11,6 +11,10 @@ const DoctorRecords = () => {
     const [profile,setProfile]=useState<any>(null);
     const [records,setRecords]=useState<any[]>([]);
 
+    useEffect(() => {
+        document.title = "Doctor Medical Records | MediTrack";
+    },[]);
+
     const fetchDoctorRecords=async()=>{
         try{
             const res=await fetch("http://localhost:5000/api/records/doctor",{

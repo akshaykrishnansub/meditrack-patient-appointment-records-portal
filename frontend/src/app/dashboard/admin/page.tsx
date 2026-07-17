@@ -10,6 +10,10 @@ const Admin = () => {
   const [profile,setProfile]=useState<any>(null);
   const [stats,setStats]=useState<any>(null);
 
+  useEffect(() => {
+    document.title = "Admin Dashboard | MediTrack";
+  },[]);
+
   const fetchDashboardStats=async()=>{
     try{
       const res=await fetch("http://localhost:5000/api/admin/dashboard",{

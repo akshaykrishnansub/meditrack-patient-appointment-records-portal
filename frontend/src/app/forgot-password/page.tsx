@@ -1,11 +1,15 @@
 "use client"
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const ForgotPassword = () => {
   const router=useRouter();
   const [email,setEmail]=useState<string>("");
   const [loading,setLoading]=useState<boolean>(false);
+
+  useEffect(() => {
+    document.title = "Forgot Password | MediTrack";
+  },[]);
 
   const handleForgotPassword=async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();

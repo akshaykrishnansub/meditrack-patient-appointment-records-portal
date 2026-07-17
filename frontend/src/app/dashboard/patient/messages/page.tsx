@@ -10,6 +10,10 @@ const PatientMessages = () => {
     const [content,setContent]=useState<string>("");
     const [showChat,setShowChat]=useState<boolean>(false);
 
+    useEffect(() => {
+        document.title = "Patient Messages | MediTrack";
+    },[]);
+
     const handleSend=()=>{
         if(!content.trim())
             return;
