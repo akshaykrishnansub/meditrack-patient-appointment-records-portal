@@ -3,6 +3,7 @@ import { createUser, findUserByEmail, findUserById, getAllDoctors, updatePasswor
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { sendPasswordResetEmail } from '../services/email.service.js';
+import { createAuditLog } from '../models/audit.model.js';
 
 interface AuthRequest extends Request{
     user?:{
@@ -66,6 +67,8 @@ export const login=async(req:Request,res:Response)=>{
             sameSite:"lax",
             maxAge:1*24*60*60*1000
         })
+
+        await createAuditLog(user.id,"LOGIN",`${user.name} logged into the system`)
 
         return res.json({message:"Login Successful",token,user:{id:user.id,name:user.name,role:user.role}})
 

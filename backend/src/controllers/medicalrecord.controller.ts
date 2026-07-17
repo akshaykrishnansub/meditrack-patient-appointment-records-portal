@@ -1,6 +1,7 @@
 import type {Request,Response} from 'express';
 import { createMedicalRecord, deleteMedicalRecord, getMedicalRecordById, getMedicalRecordsByDoctorId, getMedicalRecordsByUserId, isDoctorAssignedToPatient } from '../models/medicalrecord.model.js';
 import storage from '../services/storage/storage.service.js';
+import { createAuditLog } from '../models/audit.model.js';
 
 interface AuthRequest extends Request{
     user?:{
@@ -21,6 +22,7 @@ export const uploadMedicalRecord=async(req:AuthRequest,res:Response)=>{
             return res.status(400).json({error:"Description is required"});
         }
         const record=await createMedicalRecord(userId,filePath,description);
+        await createAuditLog(userId,"UPLOADED_MEDICAL_RECORD",`Medical record with description "${description}"`)
         return res.status(201).json(record);
     }catch(err){
         console.error(err);
@@ -47,6 +49,7 @@ export const removeMedicalRecord=async(req:AuthRequest,res:Response)=>{
             return res.status(404).json({error:"Medical record not found"});
         }
         await storage.delete(deleted.filepath);
+        await createAuditLog(req.user!.id,"DELETE_MEDICAL_RECORD",`Deleted Medical Record "${deleted.description}"`)
         return res.json(deleted);
     }catch(err){
         console.error(err);

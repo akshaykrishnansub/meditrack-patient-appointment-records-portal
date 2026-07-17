@@ -10,6 +10,7 @@ import medicalRecordRoutes from './routes/medicalrecord.routes.js'
 import messageRoutes from './routes/message.routes.js';
 import emailRoutes from './routes/email.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import auditRoutes from './routes/audit.routes.js';
 const app:Application=express();
 
 app.use(cors({
@@ -26,6 +27,7 @@ app.use("/api/appointments",appointmentRoutes);
 app.use("/api/records",medicalRecordRoutes);
 app.use("/api/messages",messageRoutes);
 app.use("/api",emailRoutes);
+app.use("/api/audit",auditRoutes)
 app.use("/api/admin",adminRoutes);
 
 app.get("/",(req:Request,res:Response)=>{

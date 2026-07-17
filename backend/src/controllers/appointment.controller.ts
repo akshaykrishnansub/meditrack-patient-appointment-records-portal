@@ -1,6 +1,7 @@
 import type {Request,Response} from "express";
 import { createAppointment, getAllAppointments, getAppointmentsByDoctorId, rescheduleAppointment, updateStatus, checkDoctorAvailability, getPatientAppointmentWithDoctorName, getAppointmentEmailData} from "../models/appointment.model.js";
 import { sendAppointmentApprovedEmail, sendAppointmentBookedEmail, sendAppointmentCancelledEmail, sendAppointmentRescheduledEmail } from "../services/email.service.js";
+import { createAuditLog } from "../models/audit.model.js";
 
 interface AuthRequest extends Request{
     user?:{
@@ -22,6 +23,7 @@ export const bookAppointment=async(req:AuthRequest,res:Response)=>{
         }
         const appointment=await createAppointment(patientId,doctorId,datetime);
         const emailData=await getAppointmentEmailData(appointment.id);
+        await createAuditLog(patientId,"BOOK_APPOINTMENT",`Booked Appointment Dr. ${emailData.doctor_name} on ${new Date(emailData.datetime).toLocaleString()}`)
         await sendAppointmentBookedEmail(emailData.patient_name,emailData.patient_email,emailData.doctor_name,emailData.datetime);
         return res.status(201).json(appointment);
     }catch(err){

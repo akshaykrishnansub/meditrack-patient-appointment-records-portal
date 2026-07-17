@@ -6,6 +6,7 @@ import storage from "../services/storage/storage.service.js";
 import bcrypt from 'bcrypt'
 import { sendDoctorWelcomeEmail } from "../services/email.service.js";
 import { getAllAppointments } from "../models/admin.model.js";
+import { createAuditLog } from "../models/audit.model.js";
 
 export const fetchAllUsers=async(req:Request,res:Response)=>{
     try{
@@ -142,6 +143,9 @@ export const deleteMedicalRecord=async(req:AuthRequest,res:Response)=>{
         if(!record){
             res.status(404).json({error:"Medical Record not found"});
         }
+        await storage.delete(record.filepath);
+        await deleteMedicalRecordByAdmin(id as string);
+        await createAuditLog(req.user!.id,"ADMIN_DELETE_MEDICAL_RECORD",`Deleted medical record "${record.description}" of patient ID "${record.userid}"`)
         res.status(200).json({message:"Medical Record Deleted Successfully"});
 
     }catch(err){

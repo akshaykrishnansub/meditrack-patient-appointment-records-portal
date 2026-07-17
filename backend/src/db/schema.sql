@@ -37,3 +37,11 @@ receiverId uuid references users(id),
 content text not null,
 sentAt timestamp default current_timestamp not null
 );
+
+create table auditlog(
+id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+userId UUID REFERENCES users(id) ON DELETE SET NULL,
+action VARCHAR(100) NOT NULL,
+details TEXT NOT NULL,
+createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
