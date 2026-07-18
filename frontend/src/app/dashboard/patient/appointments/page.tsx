@@ -9,11 +9,26 @@ const Appointment = () => {
   const router=useRouter();
 
   const [appointments,setAppointments]=useState([]);
+  const [profile,setProfile]=useState<any>(null)
   const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
+  const [sidebarOpen,setSidebarOpen]=useState<boolean>(false);
 
   useEffect(() => {
     document.title = "Patient Appointments | MediTrack";
   },[]);
+
+  const fetchPatientProfile=async()=>{
+    const res=await fetch("http://localhost:5000/api/auth/me",{
+      credentials:"include"
+    })
+    const data=await res.json();
+    if(!res.ok){
+      showToast(data.error || "Failed to fetch Patient Profile","error");
+      return;
+    }
+    setProfile(data.user);
+    console.log(data);
+  }
 
   const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
     setToast({message,type});
@@ -41,6 +56,7 @@ const Appointment = () => {
   }
 
   useEffect(()=>{
+    fetchPatientProfile();
     fetchAppointments();
   },[]);
 
@@ -75,18 +91,30 @@ const Appointment = () => {
 
   return (
     <div className='bg-gray-100 flex min-h-screen'>
-      <aside className='hidden lg:block fixed left-0 top-0 h-screen w-64 bg-white shadow-md p-6 overflow-y-auto'>
-        <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
+      {sidebarOpen && (
+        <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={()=>setSidebarOpen(false)}/>
+      )}
+      <aside className={`fixed left-0 top-0 h-screen w-64 bg-white shadow-md p-6 overflow-y-auto z-50 transform transition-transform duration-300 ${sidebarOpen?"translate-x-0":"-translate-x-full"} lg:translate-x-0 lg:block`}>
+        <div className='flex justify-between items-center mb-8'>
+          <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
+          <button className="lg:hidden" onClick={()=>setSidebarOpen(false)}>X</button>
+        </div>
         <nav className='space-y-4'>
-          <Link href="/dashboard/patient" className='block font-bold p-2 rounded hover:bg-green-200'>Patient Dashboard</Link>
-          <Link href="/dashboard/patient/appointments" className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
-          <Link href="/dashboard/patient/records" className='block font-bold p-2 rounded hover:bg-green-200'>Medical Records</Link>
-          <Link href="/dashboard/patient/profile" className='block font-bold p-2 rounded hover:bg-green-200'>Profile</Link>
-          <Link href="/dashboard/patient/messages" className='block font-bold p-2 rounded hover:bg-green-200'>Messages</Link>
+          <Link href="/dashboard/patient" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Patient Dashboard</Link>
+          <Link href="/dashboard/patient/appointments" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
+          <Link href="/dashboard/patient/records" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Medical Records</Link>
+          <Link href="/dashboard/patient/profile" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Profile</Link>
+          <Link href="/dashboard/patient/messages" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Messages</Link>
           <button onClick={handleLogout} className='mt-auto bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Logout</button>
         </nav>
       </aside>
       <main className='flex-1 md:p-8 lg:ml-64 p-4 overflow-x-auto'>
+        <div className='lg:hidden mb-6'>
+          <button onClick={()=>setSidebarOpen(true)} className='p-2 shadow cursor-pointer'>☰</button>
+        </div>
+        <div className='mb-6'>
+          <h1 className='text-3xl font-bold'>Welcome, {profile?.name}</h1>
+        </div>
         <h1 className='text-3xl'>My Appointments</h1>
         <div className='mt-4'>
           <Link href="/dashboard/patient/appointments/book" className='text-white font-bold text-xl px-4 py-2 bg-green-900 rounded'>+ Book Appointment</Link>
