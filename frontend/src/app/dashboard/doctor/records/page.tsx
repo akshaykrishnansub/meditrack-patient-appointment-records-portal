@@ -85,11 +85,11 @@ const DoctorRecords = () => {
     }
 
   return (
-    <div className='bg-gray-100 flex'>
+    <div className='bg-gray-100 flex min-h-screen'>
         <aside className='hidden lg:block bg-white w-64 min-h-screen p-6 shadow-md'>
             <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
             <nav className='space-y-4'>
-                <Link href="/dashboard/patient" className='block font-bold p-2 rounded hover:bg-green-200'>Patient Dashboard</Link>
+                <Link href="/dashboard/patient" className='block font-bold p-2 rounded hover:bg-green-200'>Doct Dashboard</Link>
                 <Link href="/dashboard/doctor/appointments" className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
                 <Link href="/dashboard/doctor/records" className='block font-bold p-2 rounded hover:bg-green-200'>Patient Records</Link>
                 <Link href="/dashboard/doctor/messages" className='block font-bold p-2 rounded hover:bg-green-200'>Messages</Link>
@@ -97,7 +97,7 @@ const DoctorRecords = () => {
                 <button onClick={handleLogout} className='mt-auto bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Logout</button>
             </nav>
         </aside>
-        <main className='flex-1 p-8 min-h-screen'>
+        <main className='flex-1 md:p-8 lg:ml-64 p-4 overflow-x-auto'>
             {/*Hello Doctor section */}
             <div className='mb-8'>
                 <h1 className='text-3xl font-bold'>Welcome, Dr.{" "}{profile?.name}</h1>

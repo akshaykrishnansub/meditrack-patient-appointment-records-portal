@@ -107,8 +107,8 @@ const EditUser = () => {
   }
 
   return (
-    <div className='bg-gray-100 flex'>
-      <aside className='hidden lg:block min-h-screen bg-white w-64 shadow-md p-6'>
+    <div className='bg-gray-100 flex min-h-screen'>
+      <aside className='hidden lg:block fixed left-0 top-0 h-screen w-64 bg-white shadow-md p-6 overflow-y-auto'>
         <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
         <nav className='space-y-4'>
           <Link href="/dashboard/admin" className='block font-bold p-2 rounded hover:bg-green-200'>Admin Dashboard</Link>
@@ -121,7 +121,7 @@ const EditUser = () => {
           <button onClick={handleLogout} className='mt-auto bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Logout</button>
         </nav>
       </aside>
-      <main className='flex-1 bg-gray-100 min-h-screen p-8'>
+      <main className='flex-1 md:p-8 lg:ml-64 p-4 overflow-x-auto'>
         <h1 className='text-3xl font-bold'>Welcome,{" "}{profile?.name}</h1>
         <div className="bg-white w-full p-8 mt-4">
           <h1 className='text-2xl font-bold mb-6'>Update User</h1>
