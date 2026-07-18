@@ -9,25 +9,35 @@ const ResetPassword = () => {
     const [password,setPassword]=useState<string>("");
     const [confirmPassword,setConfirmPassword]=useState<string>("");
     const [loading,setLoading]=useState<boolean>(false);
+    const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
       document.title = "Reset Password | MediTrack";
     },[]);
 
+    const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
+
     const handleResetPassword=async(e:React.FormEvent<HTMLFormElement>)=>{
       e.preventDefault();
       if(!token){
-        alert("Invalid or missing reset token");
+        showToast("Invalid or missing reset token","error");
         return;
       }
 
       if(!password.trim()||!confirmPassword.trim()){
-        alert("Please fill in all the fields");
+        showToast("Please fill in all the fields","warning");
         return;
       }
 
+
+
       if(password!==confirmPassword){
-        alert("Passwords do not match ");
+        showToast("Passwords do not match","warning");
         return;
       }
 
@@ -42,14 +52,14 @@ const ResetPassword = () => {
         })
         const data=await res.json();
         if(!res.ok){
-          alert(data.error || "Password reset failed");
+          showToast(data.error || "Password reset failed","error");
           return;
         }
-        alert("Password Reset Successfully");
+        showToast("Password Reset Successfully","success");
         router.push("/login");
       }catch(err){
         console.error(err);
-        alert("Something went wrong");
+        showToast("Something went wrong","error");
       }finally{
         setLoading(false);
       }
@@ -69,6 +79,7 @@ const ResetPassword = () => {
                   onChange={(e)=>setPassword(e.target.value)}
                   placeholder='New Password'
                   className='w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 px-4 py-2 rounded'
+                  required
                   />
                   <label htmlFor="confirmPassword" className='block mb-2 font-medium mt-2'>Confirm Password</label>
                   <input type="password"
@@ -76,6 +87,7 @@ const ResetPassword = () => {
                   onChange={(e)=>setConfirmPassword(e.target.value)}
                   placeholder='Confirm New Password'
                   className='w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 px-4 py-2 rounded'
+                  required
                   />
                   <button type="submit"
                   disabled={loading}
@@ -85,6 +97,10 @@ const ResetPassword = () => {
               </form>
             </div>
         </div>
+        {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

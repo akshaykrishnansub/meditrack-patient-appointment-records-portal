@@ -14,10 +14,18 @@ const DoctorAppointments = () => {
   const [showModal,setShowModal]=useState<boolean>(false);
   const [selectedAppointmentId,setSelectedAppointmentId]=useState<string>("");
   const [newDateTime,setNewDateTime]=useState<string>("");
+  const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
   useEffect(() => {
     document.title = "Doctor Appointments | MediTrack";
   },[]);
+
+  const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
   const fetchDoctorProfile=async()=>{
     try{
@@ -26,13 +34,13 @@ const DoctorAppointments = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to fetch doctor profile","error");
         return;
       }
       setProfile(data.user);
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -45,17 +53,17 @@ const DoctorAppointments = () => {
 
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to approved appointment","error");
         return;
       }
 
-      alert("Appointment Approved");
+      showToast("Appointment Approved","success");
 
       fetchAppointments();
 
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -68,10 +76,10 @@ const DoctorAppointments = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to Cancel Appointment","error");
         return;
       }
-      alert("Appointment Cancelled");
+      showToast("Appointment Cancelled","success");
       fetchAppointments();
     }catch(err){
       console.error(err);
@@ -91,13 +99,13 @@ const DoctorAppointments = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to fetch appointments","error");
         return;
       }
       setAppointments(data);
     }catch(err){
       console.error(err);
-      alert('Something went wrong');
+      showToast('Something went wrong',"error");
     }
   }
 
@@ -114,7 +122,7 @@ const DoctorAppointments = () => {
 
   const handleReschedule=async()=>{
     if(!newDateTime){
-      alert("Please select a date and time");
+      showToast("Please select a date and time",'warning');
       return;
     }
 
@@ -129,17 +137,17 @@ const DoctorAppointments = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to Reschedule Appointment","error");
         return;
       }
 
-      alert("Appointment Rescheduled Successfully");
+      showToast("Appointment Rescheduled Successfully","success");
       setShowModal(false);
       fetchAppointments();
 
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -203,6 +211,7 @@ const DoctorAppointments = () => {
               value={newDateTime}
               onChange={(e)=>setNewDateTime(e.target.value)}
               className='w-full border p-2 rounded'
+              required
               />
               <div className='flex gap-2 justify-end mt-6'>
                 <button onClick={()=>setShowModal(false)} className='bg-red-800 text-white px-4 py-2 rounded font-bold cursor-pointer hover:bg-red-600'>Cancel</button>
@@ -211,6 +220,10 @@ const DoctorAppointments = () => {
             </div>
           </div>
         )}
+        {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

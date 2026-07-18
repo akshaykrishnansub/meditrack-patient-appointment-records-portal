@@ -13,11 +13,19 @@ const EditUser = () => {
   const [email,setEmail]=useState<string>("");
   const [role,setRole]=useState<string>("");
   const [loading,setLoading]=useState<boolean>(true);
+  const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
   const {logout}=useAuth();
 
   useEffect(() => {
-                  document.title = "Admin Edit User | MediTrack";
-                },[]);
+    document.title = "Admin Edit User | MediTrack";
+  },[]);
+
+  const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
   const fetchProfile=async()=>{
     try{
@@ -26,13 +34,13 @@ const EditUser = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to fetch profile","error");
         return;
       }
       setProfile(data.user);
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -48,7 +56,7 @@ const EditUser = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to fetch user details","error");
         return;
       }
       setName(data.name);
@@ -56,7 +64,7 @@ const EditUser = () => {
       setRole(data.role);
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }finally{
       setLoading(false);
     }
@@ -75,14 +83,14 @@ const EditUser = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to submit new details","error");
         return;
       }
-      alert(data.message);
+      showToast(data.message,"success");
       router.push('/dashboard/admin/users');
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -124,12 +132,14 @@ const EditUser = () => {
               value={name}
               onChange={(e)=>setName(e.target.value)}
               className='w-full px-4 py-2 mb-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 rounded'
+              required
               />
               <label htmlFor="email" className='block mt-2 mb-2 font-semibold'>Email</label>
               <input type="email"
               value={email}
               onChange={(e)=>setName(e.target.value)}
               className='w-full mb-2 px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600 rounded'
+              required
               />
               <label htmlFor="name" className='block mb-2 font-semibold'>Role</label>
               <input type="text"
@@ -143,6 +153,10 @@ const EditUser = () => {
           </form>
         </div>
       </main>
+      {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

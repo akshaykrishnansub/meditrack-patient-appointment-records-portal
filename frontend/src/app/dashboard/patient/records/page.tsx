@@ -15,10 +15,19 @@ const PatientRecords = () => {
     const [selectedFile,setSelectedFile]=useState<File | null>(null);
     const [description,setDescription]=useState<string>("");
     const [uploadProgress,setUploadProgress]=useState<number>(0);
+    const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
         document.title = "Patient Medical Records | MediTrack";
     },[]);
+
+    const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
+
 
     const fetchPatientProfile=async()=>{
         try{
@@ -35,7 +44,7 @@ const PatientRecords = () => {
 
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -54,7 +63,7 @@ const PatientRecords = () => {
             console.log(records);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
     
@@ -74,14 +83,14 @@ const PatientRecords = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to delete record","error");
                 return;
             }
-            alert("Record Deleted successfully");
+            showToast("Record Deleted successfully","success");
             fetchPatientRecords();
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -92,25 +101,25 @@ const PatientRecords = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to download record","error");
                 return;
             }
             window.open(data.url,"_blank");
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
 
     }
 
     const handleUpload=async()=>{
         if(!selectedFile){
-            alert("Please choose a file");
+            showToast("Please choose a file","warning");
             return;
         }
 
         if(!description.trim()){
-            alert("Please enter a description");
+            showToast("Please enter a description","warning");
             return;
         }
 
@@ -144,10 +153,11 @@ const PatientRecords = () => {
                     fileInputRef.current.value="";
                 }
             },1000)
+            showToast("Record Uploaded Successfully","success");
         fetchPatientRecords();
         }catch(err:any){
             console.error(err);
-            alert(err.response?.data?.error || "Something went wrong");
+            showToast(err.response?.data?.error || "Something went wrong","error");
         }
     }
 
@@ -230,6 +240,10 @@ const PatientRecords = () => {
                 </div>
             </div>
         </main>
+        {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

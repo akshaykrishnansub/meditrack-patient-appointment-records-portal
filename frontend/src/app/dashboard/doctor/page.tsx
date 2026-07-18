@@ -10,10 +10,18 @@ const DoctorDashboard = () => {
 
   const [profile,setProfile]=useState<any>(null);
   const [appointments,setAppointments]=useState<any[]>([]);
+  const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
   useEffect(() => {
     document.title = "Doctor Dashboard | MediTrack";
   },[]);
+
+  const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
   const fetchProfile=async()=>{
     try{
@@ -24,14 +32,14 @@ const DoctorDashboard = () => {
       const data=await res.json();
       console.log(data.user);
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to view profile name","error");
         return;
       }
 
       setProfile(data.user);
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -44,17 +52,17 @@ const DoctorDashboard = () => {
 
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to approve appointment","error");
         return;
       }
 
-      alert("Appointment Approved");
+      showToast("Appointment Approved","success");
 
       fetchAppointments();
 
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -67,16 +75,16 @@ const DoctorDashboard = () => {
 
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to cancel appointment","error");
         return;
       }
 
-      alert("Appointment Cancelled");
+      showToast("Appointment Cancelled","success");
       fetchAppointments();
 
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -88,14 +96,14 @@ const DoctorDashboard = () => {
 
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to fetch appointment details","error");
         return;
       }
       console.log(data);
       setAppointments(data);
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -195,6 +203,10 @@ const DoctorDashboard = () => {
           </div>
         </div>
       </main>
+      {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

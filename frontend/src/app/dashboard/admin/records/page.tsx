@@ -11,11 +11,19 @@ const AdminRecords = () => {
   const [records,setRecords]=useState<any[]>([]);
   const [loading,setLoading]=useState<boolean>(true);
   const [search,setSearch]=useState<string>("");
+  const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
   useEffect(() => {
     document.title = "Admin Medical Records | MediTrack";
   },[]);
   
+  const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
+
   const fetchProfile=async()=>{
     try{
       const res=await fetch("http://localhost:5000/api/auth/me",{
@@ -23,13 +31,13 @@ const AdminRecords = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to fetch admin profile","error");
         return;
       }
       setProfile(data.user);
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -40,13 +48,13 @@ const AdminRecords = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to fetch records","error");
         return;
       }
       setRecords(data);
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }finally{
       setLoading(false);
     }
@@ -77,10 +85,10 @@ const AdminRecords = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to delete medical record","error");
         return;
       }
-      alert(data.message);
+      showToast(data.message,"success");
       fetchRecords();
     }catch(err){
       console.error(err);
@@ -94,13 +102,13 @@ const AdminRecords = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to download records","error");
         return;
       }
       window.open(data.url,"_blank");
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -134,6 +142,7 @@ const AdminRecords = () => {
             onChange={(e)=>setSearch(e.target.value)}
             placeholder='Search by Patient Name, Patient Email and Description...'
             className='w-full md:w-96 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-600'
+            required
             />
           </div>
           <div className='hidden lg:block overflow-x-auto'>
@@ -214,6 +223,10 @@ const AdminRecords = () => {
           </div>
         </div>
       </main>
+      {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

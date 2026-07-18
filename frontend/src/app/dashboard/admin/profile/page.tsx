@@ -11,15 +11,23 @@ const AdminProfile = () => {
   const [profile,setProfile]=useState<any>(null);
   const [editMode,setEditMode]=useState<boolean>(false);
   const [formData,setFormData]=useState({name:"",email:""});
+  const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
-  const fetchDoctorProfile=async()=>{
+  const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
+
+  const fetchAdminProfile=async()=>{
     try{
       const res=await fetch("http://localhost:5000/api/auth/me",{
         credentials:"include"
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to fetch admin profile","error");
         return;
       }
       setProfile(data.user);
@@ -29,12 +37,12 @@ const AdminProfile = () => {
       })
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
   useEffect(()=>{
-    fetchDoctorProfile();
+    fetchAdminProfile();
   },[]);
   
   const handleLogout=async()=>{
@@ -54,10 +62,10 @@ const AdminProfile = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to save new details","error");
         return;
       }
-      alert(data.message);
+      showToast(data.message,"success");
       setProfile(data.user);
       setFormData({
         name:data.user.name,
@@ -66,7 +74,7 @@ const AdminProfile = () => {
       setEditMode(false);
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
   
@@ -129,6 +137,10 @@ const AdminProfile = () => {
           </div>
         </div>
       </main>
+      {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div> 
   )
 }

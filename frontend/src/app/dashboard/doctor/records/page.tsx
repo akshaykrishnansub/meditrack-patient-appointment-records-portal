@@ -10,10 +10,18 @@ const DoctorRecords = () => {
 
     const [profile,setProfile]=useState<any>(null);
     const [records,setRecords]=useState<any[]>([]);
+    const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
         document.title = "Doctor Medical Records | MediTrack";
     },[]);
+
+    const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
     const fetchDoctorRecords=async()=>{
         try{
@@ -22,13 +30,13 @@ const DoctorRecords = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetch doctor records","error");
                 return;
             }
             setRecords(data);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -39,13 +47,13 @@ const DoctorRecords = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to download the record","error");
                 return;
             }
             window.open(data.url,"_blank");
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -56,13 +64,13 @@ const DoctorRecords = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetch doctor profile","error");
                 return;
             }
             setProfile(data.user);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -113,6 +121,10 @@ const DoctorRecords = () => {
                 </div>
             </div>
         </main>
+        {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

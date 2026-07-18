@@ -4,6 +4,7 @@ import Link from 'next/link'
 
 const Register = () => {
     const [formData,setFormData]=useState({name:"",email:"",password:"",confirmPassword:""})
+    const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
         document.title = "Registration | MediTrack";
@@ -18,10 +19,17 @@ const Register = () => {
         })
     }
 
+    const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+        setToast({message,type});
+        setTimeout(()=>{
+            setToast(null);
+        },3000);
+    }
+
     const handleSubmit=async(e:React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
         if(formData.password!==formData.confirmPassword){
-            alert("Passwords do not match");
+            showToast("Passwords do not match","warning");
             return;
         }
         console.log(formData);
@@ -41,10 +49,10 @@ const Register = () => {
         })
         const data=await res.json();
         if(!res.ok){
-            alert(data.error || "Registration Failed");
+            showToast(data.error || "Registration Failed", "error");
             return;
         }
-        alert("Registration Successful");
+        showToast("Registration Successful", "success");
         setFormData({
           name:"",
           email:"",
@@ -53,7 +61,7 @@ const Register = () => {
         })
     }catch(err){
         console.error(err);
-        alert("Something went wrong");
+        showToast("Something went wrong", "error");
     }
 }
 
@@ -72,7 +80,8 @@ const Register = () => {
                         value={formData.name}
                         onChange={handleChange}
                         className='w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600'
-                        placeholder='Enter your full name' 
+                        placeholder='Enter your full name'
+                        required
                         />
                     </div>
                     <div className='mb-5'>
@@ -83,6 +92,7 @@ const Register = () => {
                         onChange={handleChange}
                         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600" 
                         placeholder='Enter your email'
+                        required
                         />
                     </div>
                     <div className='mb-5'>
@@ -93,6 +103,7 @@ const Register = () => {
                         onChange={handleChange} 
                         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600" 
                         placeholder='Enter your password'
+                        required
                         />
                     </div>
                     <div className='mb-5'>
@@ -103,6 +114,7 @@ const Register = () => {
                         onChange={handleChange}
                         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600"
                         placeholder='Confirm your Password'
+                        required
                         />
                     </div>
                     <div className='mb-5'>
@@ -114,6 +126,10 @@ const Register = () => {
                 </div>
             </div>
         </div>
+        {toast && (
+            <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+                ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+        )}
     </div>
     
   )

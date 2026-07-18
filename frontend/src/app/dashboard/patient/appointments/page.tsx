@@ -9,10 +9,18 @@ const Appointment = () => {
   const router=useRouter();
 
   const [appointments,setAppointments]=useState([]);
+  const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
   useEffect(() => {
     document.title = "Patient Appointments | MediTrack";
   },[]);
+
+  const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
   const fetchAppointments=async()=>{
     try{
@@ -22,13 +30,13 @@ const Appointment = () => {
 
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to fetch Appointments","error");
         return;
       }
       setAppointments(data);
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -44,7 +52,7 @@ const Appointment = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error || "Failed to cancel appointment");
+        showToast(data.error || "Failed to cancel appointment","error");
         return;
       }
 
@@ -55,7 +63,7 @@ const Appointment = () => {
     );
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -101,6 +109,10 @@ const Appointment = () => {
             )}
           </div>
       </main>
+      {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

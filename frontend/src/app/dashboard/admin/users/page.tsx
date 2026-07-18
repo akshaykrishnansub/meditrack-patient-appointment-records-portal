@@ -5,8 +5,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-
-
 const AdminUsers = () => {
     const {logout}=useAuth();
     const router=useRouter();
@@ -14,10 +12,18 @@ const AdminUsers = () => {
     const [users,setUsers]=useState<any[]>([]);
     const [loading,setLoading]=useState<boolean>(true);
     const [searchTerm,setSearchTerm]=useState<string>("");
+    const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
         document.title = "Admin User Listing | MediTrack";
     },[]);
+
+    const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
     const handleDelete=async(id:string)=>{
         const confirmDelete=window.confirm("Are you sure you want to delete this user?");
@@ -31,14 +37,14 @@ const AdminUsers = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to delete user","error");
                 return;
             }
-            alert(data.message);
+            showToast(data.message,"success");
             fetchUsers();
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","success");
         }
     }
 
@@ -55,13 +61,13 @@ const AdminUsers = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetch profile","error");
                 return;
             }
             setProfile(data.user);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -72,13 +78,13 @@ const AdminUsers = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetch user details","error");
                 return;
             }
             setUsers(data);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }finally{
             setLoading(false);
         }
@@ -121,6 +127,7 @@ const AdminUsers = () => {
                     onChange={(e)=>setSearchTerm(e.target.value)}
                     placeholder='Search by name or email...'
                     className='w-full md:w-96 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-600'
+                    required
                     />
                 </div>
                 <div className='hidden lg:block overflow-x-auto'>
@@ -195,6 +202,10 @@ const AdminUsers = () => {
                 </div>
             </div>
         </main>
+        {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

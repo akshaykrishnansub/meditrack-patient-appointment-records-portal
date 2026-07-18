@@ -9,10 +9,18 @@ const PatientMessages = () => {
     const [messages,setMessages]=useState<any[]>([]);
     const [content,setContent]=useState<string>("");
     const [showChat,setShowChat]=useState<boolean>(false);
+    const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
         document.title = "Patient Messages | MediTrack";
     },[]);
+
+    const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
     const handleSend=()=>{
         if(!content.trim())
@@ -45,13 +53,13 @@ const PatientMessages = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetch Profile","error");
                 return;
             }
             setProfile(data.user);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -63,14 +71,14 @@ const PatientMessages = () => {
 
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetch conversations","error");
                 return;
             }
             console.log(data);
             setConversations(data.conversations);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -81,14 +89,14 @@ const PatientMessages = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error ||"Failed to load Messages","error");
                 return;
             }
             console.log(data);
             setMessages(data.messages);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -177,6 +185,10 @@ const PatientMessages = () => {
                 <button onClick={handleSend} className="bg-green-700 text-white px-5 rounded-lg hover:bg-green-800 transition">Send</button>
             </div>
         </main>
+        {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

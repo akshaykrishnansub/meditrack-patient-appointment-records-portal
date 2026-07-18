@@ -11,6 +11,15 @@ const PatientProfile = () => {
   const [profile,setProfile]=useState<any>(null);
   const [editMode,setEditMode]=useState<boolean>(false);
   const [formData,setFormData]=useState({name:"",email:""})
+  const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
+
+  const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
+
   const fetchPatientProfile=async()=>{
     try{
       const res=await fetch("http://localhost:5000/api/auth/me",{
@@ -18,7 +27,7 @@ const PatientProfile = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to fetch patient Profile","error");
         return;
       }
       setProfile(data.user);
@@ -28,7 +37,7 @@ const PatientProfile = () => {
       })
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -57,10 +66,10 @@ const PatientProfile = () => {
       })
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to save new data","error");
         return;
       }
-      alert(data.message);
+      showToast(data.message,"success");
       setProfile(data.user);
       setFormData({
         name:data.user.name,
@@ -69,7 +78,7 @@ const PatientProfile = () => {
       setEditMode(false);
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -128,6 +137,10 @@ const PatientProfile = () => {
           </div>
         </div>
       </main>
+      {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

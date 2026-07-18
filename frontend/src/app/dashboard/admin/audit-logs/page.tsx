@@ -13,10 +13,18 @@ const AuditLogs = () => {
     const [loading,setLoading]=useState<boolean>(true);
     const [search,setSearch]=useState<string>("");
     const [filteredLogs,setFilteredLogs]=useState<any[]>([]);
+    const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
         document.title = "Admin Audit Logs | MediTrack";
     },[]);
+
+    const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
     const handleLogout=async()=>{
         await logout();
@@ -30,13 +38,13 @@ const AuditLogs = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetched profile","error");
                 return;
             }
             setProfile(data.user);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -47,14 +55,14 @@ const AuditLogs = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetch Logs","error");
                 return;
             }
             setLogs(data);
             setFilteredLogs(data);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }finally{
             setLoading(false);
         }
@@ -99,6 +107,7 @@ const AuditLogs = () => {
                     onChange={(e)=>setSearch(e.target.value)}
                     placeholder='Search Audit Logs...'
                     className='w-full md:w-96 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-600'
+                    required
                     />
                 </div>
                 <div className='hidden lg:block overflow-x-auto'>
@@ -164,6 +173,10 @@ const AuditLogs = () => {
                 </div>
             </div>
         </main>
+        {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

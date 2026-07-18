@@ -10,10 +10,18 @@ const DoctorMessages = () => {
     const [messages,setMessages]=useState<any[]>([]);
     const [content,setContent]=useState<string>("");
     const [showChat,setShowChat]=useState<boolean>(false);
+    const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
         document.title = "Doctor Messages | MediTrack";
     },[]);
+
+    const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
     const handleSend=()=>{
         if(!content.trim())
@@ -47,13 +55,13 @@ const DoctorMessages = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error ||"Failed to fetch doctor profile");
                 return;
             }
             setProfile(data.user);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -64,14 +72,14 @@ const DoctorMessages = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetch conversations","error");
                 return;
             }
             console.log(data);
             setConversations(data.conversations);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -82,14 +90,14 @@ const DoctorMessages = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetch messages","error");
                 return;
             }
             console.log(data);
             setMessages(data.messages);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }
     }
 
@@ -174,10 +182,14 @@ const DoctorMessages = () => {
                 )}
             </div>
             <div className='border-t border-gray-300 p-3 flex gap-2'>
-                <input type="text" value={content} onChange={(e)=>setContent(e.target.value)} placeholder='Type your message here...' className="flex-1 border rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-green-600"/>
+                <input type="text" value={content} onChange={(e)=>setContent(e.target.value)} placeholder='Type your message here...' className="flex-1 border rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-green-600" required/>
                 <button onClick={handleSend} className='bg-green-700 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-green-800'>Send</button>
             </div>
         </main>
+        {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

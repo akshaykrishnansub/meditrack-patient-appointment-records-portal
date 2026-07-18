@@ -10,10 +10,18 @@ const BookAppointment = () => {
 
   const [formData,setFormData]=useState({doctorId:"",date:"",time:""})
   const [doctors,setDoctors]=useState([]);
+  const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
   useEffect(() => {
     document.title = "Patient Book Appointment | MediTrack";
   },[]);
+
+  const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
   useEffect(()=>{
     const fetchDoctors=async()=>{
@@ -56,15 +64,15 @@ const BookAppointment = () => {
 
       const data=await res.json();
       if(!res.ok){
-        alert(data.error);
+        showToast(data.error || "Failed to Book Appointment","error");
         return;
       }
-      alert("Appointment Booked Successfully");
+      showToast("Appointment Booked Successfully","success");
       router.push("/dashboard/patient/appointments");
 
     }catch(err){
       console.error(err);
-      alert("Something went wrong");
+      showToast("Something went wrong","error");
     }
   }
 
@@ -106,7 +114,9 @@ const BookAppointment = () => {
                 <input type="date" name="date" 
                 value={formData.date}
                 onChange={handleChange}
-                className='w-full border border-gray-300 rounded p-3'/>
+                className='w-full border border-gray-300 rounded p-3'
+                required
+                />
               </div>
               <div className='mb-6'>
                 <label className='block font-semibold mb-2 mt-4'>Appointment Time</label>
@@ -127,6 +137,25 @@ const BookAppointment = () => {
                   <option>13:30</option>
                   <option>14:00</option>
                   <option>14:30</option>
+                  <option>15:00</option>
+                  <option>15:30</option>
+                  <option>16:00</option>
+                  <option>16:30</option>
+                  <option>17:00</option>
+                  <option>17:30</option>
+                  <option>18:00</option>
+                  <option>18:30</option>
+                  <option>19:00</option>
+                  <option>19:30</option>
+                  <option>20:00</option>
+                  <option>20:30</option>
+                  <option>21:00</option>
+                  <option>21:30</option>
+                  <option>22:00</option>
+                  <option>22:30</option>
+                  <option>23:00</option>
+                  <option>23:30</option>
+                  <option>24:00</option>
                 </select>
               </div>
               <div className='mb-6'>
@@ -136,6 +165,10 @@ const BookAppointment = () => {
             </div>
           </div>
         </main>
+        {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }

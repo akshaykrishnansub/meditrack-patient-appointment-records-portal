@@ -12,10 +12,18 @@ const CreateDoctor = () => {
     const [name,setName]=useState<string>("");
     const [email,setEmail]=useState<string>("");
     const [password,setPassword]=useState<string>("");
+    const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
         document.title = "Admin Create Doctor | MediTrack";
     },[]);
+
+    const showToast=(message:string,type:"success"|"error"|"warning"="success")=>{
+    setToast({message,type});
+    setTimeout(()=>{
+      setToast(null);
+    },3000);
+  }
 
     const fetchProfile=async()=>{
         try{
@@ -24,13 +32,13 @@ const CreateDoctor = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to fetch profile","error");
                 return;
             }
             setProfile(data.user);
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong");
         }
     }
 
@@ -48,16 +56,16 @@ const CreateDoctor = () => {
             })
             const data=await res.json();
             if(!res.ok){
-                alert(data.error);
+                showToast(data.error || "Failed to submit new doctor details","error");
                 return;
             }
-            alert("Doctor created successfully");
+            showToast("Doctor created successfully","success");
             setName("");
             setEmail("");
             setPassword("");
         }catch(err){
             console.error(err);
-            alert("Something went wrong");
+            showToast("Something went wrong","error");
         }finally{
             setLoading(false);
         }
@@ -98,14 +106,18 @@ const CreateDoctor = () => {
                     <input type="text"
                     value={name}
                     onChange={(e)=>setName(e.target.value)}
-                    className='w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600'/>
+                    className='w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600'
+                    required
+                    />
                 </div>
                 <div>
                     <label htmlFor="doctorEmail" className='block mb-2 font-semibold'>Email</label>
                     <input type="email"
                     value={email}
                     onChange={(e)=>setEmail(e.target.value)}
-                    className='w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600'/>
+                    className='w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600'
+                    required
+                    />
                 </div>
                 <div>
                     <label htmlFor="temporaryPassword" className='block mb-2 font-semibold'>Temporary Password</label>
@@ -113,6 +125,7 @@ const CreateDoctor = () => {
                     value={password}
                     onChange={(e)=>setPassword(e.target.value)}
                     className='w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-600'
+                    required
                     />
                 </div>
                 <div>
@@ -121,6 +134,10 @@ const CreateDoctor = () => {
             </form>
         </div>
       </main>
+      {toast && (
+        <div className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-lg shadow-lg text-white font-medium transition-all duration-300 animate-slide-in
+          ${toast.type==="success"?"bg-green-600":toast.type==="error"?"bg-red-600":"bg-yellow-600"}`}>{toast.message}</div>
+          )}
     </div>
   )
 }
