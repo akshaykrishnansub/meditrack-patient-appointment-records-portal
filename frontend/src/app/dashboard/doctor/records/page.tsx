@@ -10,6 +10,7 @@ const DoctorRecords = () => {
 
     const [profile,setProfile]=useState<any>(null);
     const [records,setRecords]=useState<any[]>([]);
+    const [sidebarOpen,setSidebarOpen]=useState<boolean>(false);
     const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
@@ -86,18 +87,27 @@ const DoctorRecords = () => {
 
   return (
     <div className='bg-gray-100 flex min-h-screen'>
-        <aside className='hidden lg:block bg-white w-64 min-h-screen p-6 shadow-md'>
-            <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
+        {sidebarOpen && (
+            <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={()=>setSidebarOpen(false)}/>
+        )}
+        <aside className={`fixed left-0 top-0 h-screen w-64 bg-white shadow-md p-6 overflow-y-auto z-50 transform transition-transform duration-300 ${sidebarOpen?"translate-x-0":"-translate-x-full"} lg:translate-x-0 lg:block`}>
+            <div className='flex justify-between items-center mb-8'>
+                <h1 className='text-2xl font-bold mb-8 '>Medi<span className='text-green-600'>Track</span></h1>
+                <button className="lg:hidden" onClick={()=>setSidebarOpen(false)}>X</button>
+            </div>
             <nav className='space-y-4'>
-                <Link href="/dashboard/patient" className='block font-bold p-2 rounded hover:bg-green-200'>Doct Dashboard</Link>
-                <Link href="/dashboard/doctor/appointments" className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
-                <Link href="/dashboard/doctor/records" className='block font-bold p-2 rounded hover:bg-green-200'>Patient Records</Link>
-                <Link href="/dashboard/doctor/messages" className='block font-bold p-2 rounded hover:bg-green-200'>Messages</Link>
-                <Link href="/dashboard/doctor/profile" className='block font-bold p-2 rounded hover:bg-green-200'>Doctor Profile</Link>
+                <Link href="/dashboard/patient" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Doct Dashboard</Link>
+                <Link href="/dashboard/doctor/appointments" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
+                <Link href="/dashboard/doctor/records" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Patient Records</Link>
+                <Link href="/dashboard/doctor/messages" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Messages</Link>
+                <Link href="/dashboard/doctor/profile" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Doctor Profile</Link>
                 <button onClick={handleLogout} className='mt-auto bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Logout</button>
             </nav>
         </aside>
         <main className='flex-1 md:p-8 lg:ml-64 p-4 overflow-x-auto'>
+            <div className='lg:hidden mb-6'>
+                <button onClick={()=>setSidebarOpen(true)} className='p-2 shadow cursor-pointer'>☰</button>
+            </div>
             {/*Hello Doctor section */}
             <div className='mb-8'>
                 <h1 className='text-3xl font-bold'>Welcome, Dr.{" "}{profile?.name}</h1>

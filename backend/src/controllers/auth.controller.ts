@@ -49,7 +49,7 @@ export const login=async(req:Request,res:Response)=>{
 
         //check if user exists
         if(!user){
-            return res.status(400).json({error:'User not found, Please try registering and sign in again'});
+            return res.status(404).json({error:'User not found, Please try registering and sign in again'});
         }
         //compare the passwords
         const matchedPassword=await bcrypt.compare(password,user.password_hash);
