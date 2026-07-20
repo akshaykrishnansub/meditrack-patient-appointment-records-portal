@@ -1,5 +1,6 @@
 "use client"
 import socket from '@/lib/socket';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 
 const PatientMessages = () => {
@@ -9,6 +10,7 @@ const PatientMessages = () => {
     const [messages,setMessages]=useState<any[]>([]);
     const [content,setContent]=useState<string>("");
     const [showChat,setShowChat]=useState<boolean>(false);
+    const [sidebarOpen,setSidebarOpen]=useState<boolean>(false);
     const [toast,setToast]=useState<{message:string;type:"success"|"error"|"warning";}|null>(null);
 
     useEffect(() => {
@@ -139,26 +141,35 @@ const PatientMessages = () => {
 
 
   return (
-    <div className=' bg-gray-100 flex h-dvh overflow-hidden'>
-        <aside className={`${showChat?"hidden":"block"} lg:block h-full bg-white shadow-md w-full lg:w-64 p-6 overflow-y-auto`}>
-            <h1 className='text-2xl font-bold mb-8'>Medi<span className='text-green-600'>Track</span></h1>
+    <div className=' bg-gray-100 flex h-screen overflow-hidden'>
+        {sidebarOpen && (
+        <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={()=>setSidebarOpen(false)}/>
+        )}
+        <aside className={`fixed left-0 top-0 h-screen w-64 bg-white shadow-md p-6 overflow-y-auto z-50 transform transition-transform duration-300 ${sidebarOpen || !showChat?"translate-x-0":"-translate-x-full"} lg:translate-x-0 lg:block`}>
+            <div className='flex justify-between items-center mb-8'>
+                <h1 className='text-2xl font-bold'>Medi<span className='text-green-600'>Track</span></h1>
+                <button className="lg:hidden" onClick={()=>setSidebarOpen(false)}>X</button>
+            </div>
             <p className='text-xl font-semibold mb-4'>Conversations</p>
             <div className='space-y-2'>
                 {conversations.map((conversation)=>(
                     <div key={conversation.id} 
-                    onClick={()=>{setSelectedConversation(conversation);fetchMessages(conversation.id);setShowChat(true)}}
+                    onClick={()=>{setSelectedConversation(conversation);fetchMessages(conversation.id);setShowChat(true);setSidebarOpen(false)}}
                     className={`p-3 rounded-lg cursor-pointer transition ${
                         selectedConversation?.id===conversation.id?"bg-green-200":"hover:bg-green-100"
                     }`}>
                         <p className='font-semibold'>Dr.{" "}{conversation.name}</p>
                     </div>
                 ))}
+                <Link href="/dashboard/patient/" className='font-semibold text-blue-700'> ← Back to Dashboard</Link>
             </div>
         </aside>
-        <main className={`flex-1 flex flex-col h-full bg-gray-100 ${showChat ? "block" : "hidden"} lg:flex`}>
+        <main className={`flex-1 flex flex-col lg:ml-64 h-screen bg-gray-100 ${showChat ? "block" : "hidden"} lg:flex`}>
+            <div className='p-4 border-b border-gray-300 bg-gray-100 lg:hidden'>
+                <button onClick={()=>setSidebarOpen(true)} className='p-2 shadow cursor-pointer'>☰</button>
+            </div>
             {/*Chat Header */}
             <div className='border-b border-gray-300 p-4'>
-                <button onClick={() => setShowChat(false)} className="lg:hidden mb-3 text-green-700 font-semibold">← Back</button>
                 <h2 className='text-xl font-bold'>{selectedConversation?selectedConversation.name:"Select a conversation"}</h2>
             </div>
             {/*Messages*/}

@@ -96,7 +96,7 @@ const DoctorRecords = () => {
                 <button className="lg:hidden" onClick={()=>setSidebarOpen(false)}>X</button>
             </div>
             <nav className='space-y-4'>
-                <Link href="/dashboard/patient" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Doct Dashboard</Link>
+                <Link href="/dashboard/doctor" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Doctor Dashboard</Link>
                 <Link href="/dashboard/doctor/appointments" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
                 <Link href="/dashboard/doctor/records" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Patient Records</Link>
                 <Link href="/dashboard/doctor/messages" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Messages</Link>
