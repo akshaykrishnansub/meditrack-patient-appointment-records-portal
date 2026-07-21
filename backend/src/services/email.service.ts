@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer'
+import { BrevoClient } from '@getbrevo/brevo';
 import { appointmentBookedTemplate } from '../templates/appointmentBooked.js';
 import { appointApprovedTemplate } from '../templates/appointmentApproved.js';
 import { appointmentCancelledTemplate } from '../templates/appointmentCancelled.js';
@@ -7,32 +7,28 @@ import { passwordResetTemplate } from '../templates/passwordReset.js';
 import mailGenerator from '../utils/mailGenerator.js';
 import { doctorWelcomeTemplate } from '../templates/doctorWelcome.js';
 
-console.log("Attempting to send email...");
-const transporter=nodemailer.createTransport({
-    host:"smtp.gmail.com",
-    port:587,
-    secure:false,
-    auth:{
-        user:process.env.EMAIL_USER,
-        pass:process.env.EMAIL_PASS
-    }
+const brevo=new BrevoClient({
+    apiKey:process.env.BREVO_API_KEY!
 })
-
 export const sendEmail=async(to:string,subject:string,html:string)=>{
     try{
-        const info=await transporter.sendMail({
-            from:`"MediTrack" <${process.env.EMAIL_USER}>`,
-            to,
+        await brevo.transactionalEmails.sendTransacEmail({
+            sender:{
+                name:"MediTrack",
+                email:process.env.EMAIL_FROM!,
+            },
+            to:[
+                {
+                    email:to,
+                },
+            ],
             subject,
-            html
+            htmlContent:html,
         })
-        console.log("2. sendMail completed");
-        console.log(info.messageId);
+        console.log("Email sent successfully")
     }catch(err){
-        console.error("3. Send Email Failed",err);
+        console.error("Brevo Email Error",err);
         throw err;
-    }finally{
-        console.log("4. Send Email finished")
     }
 }
 
