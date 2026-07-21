@@ -27,7 +27,7 @@ const PatientDashboard = () => {
 
   const fetchMedicalRecords=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/records",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/records`,{
         credentials:"include"
       })
       const data=await res.json();
@@ -44,7 +44,7 @@ const PatientDashboard = () => {
 
   const fetchAppointments=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/appointments",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments`,{
         credentials:"include"
       })
 
@@ -60,7 +60,7 @@ const PatientDashboard = () => {
   }
 
   const fetchPatientProfile=async()=>{
-    const res=await fetch("http://localhost:5000/api/auth/me",{
+    const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
       credentials:"include"
     })
     const data=await res.json();

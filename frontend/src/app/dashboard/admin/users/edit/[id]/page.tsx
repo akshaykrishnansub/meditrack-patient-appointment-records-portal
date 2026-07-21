@@ -30,7 +30,7 @@ const EditUser = () => {
 
   const fetchProfile=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/auth/me",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
         credentials:"include"
       })
       const data=await res.json();
@@ -52,7 +52,7 @@ const EditUser = () => {
 
   const fetchUser=async()=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/admin/users/${id}`,{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${id}`,{
         credentials:"include"
       })
       const data=await res.json();
@@ -74,7 +74,7 @@ const EditUser = () => {
   const handleSubmit=async(e:React.FormEvent)=>{
     e.preventDefault();
     try{
-      const res=await fetch(`http://localhost:5000/api/admin/users/${id}`,{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${id}`,{
         method:"PATCH",
         headers:{
           "Content-Type":"application/json"

@@ -50,7 +50,7 @@ const PatientMessages = () => {
 
     const fetchProfile=async()=>{
         try{
-            const res=await fetch("http://localhost:5000/api/auth/me",{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
                 credentials:"include"
             })
             const data=await res.json();
@@ -67,7 +67,7 @@ const PatientMessages = () => {
 
     const fetchConversations=async()=>{
         try{
-            const res=await fetch("http://localhost:5000/api/messages/conversations",{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/messages/conversations`,{
                 credentials:"include"
             })
 
@@ -86,7 +86,7 @@ const PatientMessages = () => {
 
     const fetchMessages=async(userId:string)=>{
         try{
-            const res=await fetch(`http://localhost:5000/api/messages/${userId}`,{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/messages/${userId}`,{
                 credentials:"include"
             })
             const data=await res.json();

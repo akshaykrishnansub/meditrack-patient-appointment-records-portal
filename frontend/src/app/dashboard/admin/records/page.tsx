@@ -27,7 +27,7 @@ const AdminRecords = () => {
 
   const fetchProfile=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/auth/me",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
         credentials:"include"
       })
       const data=await res.json();
@@ -44,7 +44,7 @@ const AdminRecords = () => {
 
   const fetchRecords=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/admin/records",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/records`,{
         credentials:"include"
       })
       const data=await res.json();
@@ -80,7 +80,7 @@ const AdminRecords = () => {
       return;
     }
     try{
-      const res=await fetch(`http://localhost:5000/api/admin/records/${id}`,{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/records/${id}`,{
         method:"DELETE",
         credentials:"include"
       })
@@ -98,7 +98,7 @@ const AdminRecords = () => {
 
   const handleView=async(id:string)=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/admin/records/${id}`,{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/records/${id}`,{
         credentials:"include"
       })
       const data=await res.json();

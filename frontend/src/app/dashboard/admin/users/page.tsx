@@ -32,7 +32,7 @@ const AdminUsers = () => {
             return;
         }
         try{
-            const res=await fetch(`http://localhost:5000/api/admin/users/${id}`,{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/users/${id}`,{
                 method:"DELETE",
                 credentials:"include"
             })
@@ -57,7 +57,7 @@ const AdminUsers = () => {
 
     const fetchProfile=async()=>{
         try{
-            const res=await fetch("http://localhost:5000/api/auth/me",{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
                 credentials:"include"
             })
             const data=await res.json();
@@ -74,7 +74,7 @@ const AdminUsers = () => {
 
     const fetchUsers=async()=>{
         try{
-            const res=await fetch("http://localhost:5000/api/admin/users",{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/users`,{
                 credentials:"include"
             })
             const data=await res.json();

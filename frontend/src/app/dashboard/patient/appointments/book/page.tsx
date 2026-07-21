@@ -26,7 +26,7 @@ const BookAppointment = () => {
 
   useEffect(()=>{
     const fetchDoctors=async()=>{
-      const res=await fetch("http://localhost:5000/api/auth/doctor",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/doctor`,{
         credentials:"include"
       })
 
@@ -56,7 +56,7 @@ const BookAppointment = () => {
       const datetime=`${formData.date}T${formData.time}`;
       console.log(formData);
       console.log(datetime);
-      const res=await fetch('http://localhost:5000/api/appointments',{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments`,{
         method:"POST",
         headers:{'Content-Type':'application/json'},
         credentials:"include",

@@ -26,7 +26,7 @@ const DoctorRecords = () => {
 
     const fetchDoctorRecords=async()=>{
         try{
-            const res=await fetch("http://localhost:5000/api/records/doctor",{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/records/doctor`,{
                 credentials:"include"
             })
             const data=await res.json();
@@ -43,7 +43,7 @@ const DoctorRecords = () => {
 
     const handleView=async(id:string)=>{
         try{
-            const res=await fetch(`http://localhost:5000/api/records/view/${id}`,{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/records/view/${id}`,{
                 credentials:"include"
             })
             const data=await res.json();
@@ -60,7 +60,7 @@ const DoctorRecords = () => {
 
     const fetchDoctorProfile=async()=>{
         try{
-            const res=await fetch("http://localhost:5000/api/auth/me",{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
                 credentials:"include"
             })
             const data=await res.json();

@@ -28,7 +28,7 @@ const CreateDoctor = () => {
 
     const fetchProfile=async()=>{
         try{
-            const res=await fetch("http://localhost:5000/api/auth/me",{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
                 credentials:"include"
             })
             const data=await res.json();
@@ -47,7 +47,7 @@ const CreateDoctor = () => {
         e.preventDefault();
         try{
             setLoading(true);
-            const res=await fetch("http://localhost:5000/api/admin/doctor",{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/doctor`,{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"

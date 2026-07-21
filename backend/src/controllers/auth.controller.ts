@@ -60,11 +60,13 @@ export const login=async(req:Request,res:Response)=>{
         //generate token
         const token=jwt.sign({id:user.id,role:user.role},process.env.JWT_SECRET!,{expiresIn:'1d'});
 
+        const isProduction=process.env.NODE_ENV==="production";
+
         //store the token as a cookie
         res.cookie('token',token,{
             httpOnly:true,
-            secure:false,
-            sameSite:"lax",
+            secure:isProduction,
+            sameSite:isProduction?"none":"lax",
             maxAge:1*24*60*60*1000
         })
 
@@ -97,11 +99,12 @@ export const getProfile=async(req:AuthRequest,res:Response)=>{
 
 export const logout=(req:Request,res:Response)=>{
     try{
+        const isProduction=process.env.NODE_ENV==="production";
         res.clearCookie('token',{
             path:"/",
             httpOnly:true,
-            secure:false,
-            sameSite:"lax"
+            secure:isProduction,
+            sameSite:isProduction?"none":"lax"
         })
         res.json({message:"Logged out Successfully"});
     }catch(err){
@@ -128,7 +131,7 @@ export const forgotPassword=async(req:Request,res:Response)=>{
             return res.json({message:"If an account with that email exists, a password reset link has been sent."});
         }
         const token=jwt.sign({id:user.id},process.env.JWT_SECRET!,{expiresIn:"15m"});
-        const resetLink=`http://localhost:3000/reset-password?token=${token}`;
+        const resetLink=`${process.env.FRONTEND_URL}/reset-password?token=${token}`;
         await sendPasswordResetEmail(user.name,user.email,resetLink);
         return res.json({message:"If an account with that email exists, a password reset link has been sent."});
     }catch(err){

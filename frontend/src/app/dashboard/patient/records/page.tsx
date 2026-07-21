@@ -32,7 +32,7 @@ const PatientRecords = () => {
 
     const fetchPatientProfile=async()=>{
         try{
-            const res=await fetch("http://localhost:5000/api/auth/me",{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
                 credentials:"include"
             })
             const data=await res.json();
@@ -51,7 +51,7 @@ const PatientRecords = () => {
 
     const fetchPatientRecords=async()=>{
         try{
-            const res=await fetch("http://localhost:5000/api/records",{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/records`,{
                 credentials:"include"
             })
 
@@ -78,7 +78,7 @@ const PatientRecords = () => {
         if(!confirmDelete)
             return;
         try{
-            const res=await fetch(`http://localhost:5000/api/records/${id}`,{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/records/${id}`,{
                 method:"DELETE",
                 credentials:"include"
             })
@@ -97,7 +97,7 @@ const PatientRecords = () => {
 
     const handleView=async(id:string)=>{
         try{
-            const res=await fetch(`http://localhost:5000/api/records/view/${id}`,{
+            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/records/view/${id}`,{
                 credentials:"include"
             })
             const data=await res.json();
@@ -130,7 +130,7 @@ const PatientRecords = () => {
 
         try{
             const res=await axios.post(
-                "http://localhost:5000/api/records/upload",
+                `${process.env.NEXT_PUBLIC_API_URL}/api/records/upload`,
                 formData,{
                     withCredentials:true,
                     headers:{

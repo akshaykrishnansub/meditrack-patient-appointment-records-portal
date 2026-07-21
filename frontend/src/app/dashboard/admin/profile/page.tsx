@@ -23,7 +23,7 @@ const AdminProfile = () => {
 
   const fetchAdminProfile=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/auth/me",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
         credentials:"include"
       })
       const data=await res.json();
@@ -53,7 +53,7 @@ const AdminProfile = () => {
 
   const handleSave=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/auth/me",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
         method:"PATCH",
         credentials:"include",
         headers:{

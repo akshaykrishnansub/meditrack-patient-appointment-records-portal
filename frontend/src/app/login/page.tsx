@@ -34,7 +34,7 @@ const Login = () => {
   const handleSubmit=async(e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault();
     try{
-      const res=await fetch("http://localhost:5000/api/auth/login",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,{
         method:"POST",
         credentials:"include",
         headers:{

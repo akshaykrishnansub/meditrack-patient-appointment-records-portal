@@ -18,7 +18,7 @@ const Appointment = () => {
   },[]);
 
   const fetchPatientProfile=async()=>{
-    const res=await fetch("http://localhost:5000/api/auth/me",{
+    const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
       credentials:"include"
     })
     const data=await res.json();
@@ -39,7 +39,7 @@ const Appointment = () => {
 
   const fetchAppointments=async()=>{
     try{
-      const res=await fetch('http://localhost:5000/api/appointments',{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments`,{
         credentials:"include"
       })
 
@@ -62,7 +62,7 @@ const Appointment = () => {
 
   const cancelAppointment=async(id:string)=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/appointments/${id}/cancel`,{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments/${id}/cancel`,{
         method:"PATCH",
         credentials:"include"
       })

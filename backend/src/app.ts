@@ -14,7 +14,7 @@ import auditRoutes from './routes/audit.routes.js';
 const app:Application=express();
 
 app.use(cors({
-    origin:"http://localhost:3000",
+    origin:process.env.FRONTEND_URL!,
     credentials:true
 }));
 

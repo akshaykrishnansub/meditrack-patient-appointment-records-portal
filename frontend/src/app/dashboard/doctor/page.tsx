@@ -25,7 +25,7 @@ const DoctorDashboard = () => {
 
   const fetchProfile=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/auth/me",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
         credentials:"include"
       })
 
@@ -45,7 +45,7 @@ const DoctorDashboard = () => {
 
   const handleApprove=async(id:string)=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/appointments/${id}/approve`,{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments/${id}/approve`,{
         method:"PATCH",
         credentials:"include"
       })
@@ -68,7 +68,7 @@ const DoctorDashboard = () => {
 
   const handleCancel=async(id:string)=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/appointments/${id}/cancel`,{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments/${id}/cancel`,{
         method:"PATCH",
         credentials:"include"
       })
@@ -90,7 +90,7 @@ const DoctorDashboard = () => {
 
   const fetchAppointments=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/appointments",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments`,{
         "credentials":"include"
       })
 

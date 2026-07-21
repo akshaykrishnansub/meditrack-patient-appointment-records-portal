@@ -30,7 +30,7 @@ const DoctorAppointments = () => {
 
   const fetchDoctorProfile=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/auth/me",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,{
         credentials:"include"
       })
       const data=await res.json();
@@ -47,7 +47,7 @@ const DoctorAppointments = () => {
 
   const handleApprove=async(id:string)=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/appointments/${id}/approve`,{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments/${id}/approve`,{
         method:"PATCH",
         credentials:"include"
       })
@@ -71,7 +71,7 @@ const DoctorAppointments = () => {
 
   const handleCancel=async(id:string)=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/appointments/${id}/cancel`,{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments/${id}/cancel`,{
         method:"PATCH",
         credentials:"include"
       })
@@ -95,7 +95,7 @@ const DoctorAppointments = () => {
 
   const fetchAppointments=async()=>{
     try{
-      const res=await fetch("http://localhost:5000/api/appointments",{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments`,{
         credentials:"include"
       })
       const data=await res.json();
@@ -128,7 +128,7 @@ const DoctorAppointments = () => {
     }
 
     try{
-      const res=await fetch(`http://localhost:5000/api/appointments/${selectedAppointmentId}/reschedule`,{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/appointments/${selectedAppointmentId}/reschedule`,{
         method:"PATCH",
         credentials:"include",
         headers:{
