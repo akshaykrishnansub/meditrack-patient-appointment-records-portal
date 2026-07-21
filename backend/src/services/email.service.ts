@@ -11,8 +11,10 @@ const brevo=new BrevoClient({
     apiKey:process.env.BREVO_API_KEY!
 })
 export const sendEmail=async(to:string,subject:string,html:string)=>{
-    console.log("Inside sendEmail");
     try{
+        console.log("Inside sendEmail");
+        console.log("EMAIL_FROM:", process.env.EMAIL_FROM);
+        console.log("BREVO_API_KEY exists:", !!process.env.BREVO_API_KEY);
         await brevo.transactionalEmails.sendTransacEmail({
             sender:{
                 name:"MediTrack",
