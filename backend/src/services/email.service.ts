@@ -26,10 +26,13 @@ export const sendEmail=async(to:string,subject:string,html:string)=>{
             subject,
             html
         })
-        console.log("Email sent",info.messageId);
+        console.log("2. sendMail completed");
+        console.log(info.messageId);
     }catch(err){
-        console.error("Email error",err);
+        console.error("3. Send Email Failed",err);
         throw err;
+    }finally{
+        console.log("4. Send Email finished")
     }
 }
 
