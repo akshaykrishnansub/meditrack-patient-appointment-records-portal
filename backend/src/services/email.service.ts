@@ -15,7 +15,7 @@ export const sendEmail=async(to:string,subject:string,html:string)=>{
         console.log("Inside sendEmail");
         console.log("EMAIL_FROM:", process.env.EMAIL_FROM);
         console.log("BREVO_API_KEY exists:", !!process.env.BREVO_API_KEY);
-        await brevo.transactionalEmails.sendTransacEmail({
+        const response=await brevo.transactionalEmails.sendTransacEmail({
             sender:{
                 name:"MediTrack Notifications",
                 email:"meditrack.notifications@gmail.com",
@@ -28,6 +28,7 @@ export const sendEmail=async(to:string,subject:string,html:string)=>{
             subject,
             htmlContent:html,
         })
+        console.log("Response:",response);
         console.log("Email sent successfully")
     }catch(err){
         console.error("Brevo Email Error",err);
