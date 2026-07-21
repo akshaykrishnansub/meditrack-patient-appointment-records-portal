@@ -12,7 +12,7 @@ const seed=async()=>{
         }
 
         const hashedPassword=await bcrypt.hash("Admin123@A",10);
-        await pool.query(`INSERT into users (id,name,email,password_hash,role) VALUES ($1,$2,$3,$4) RETURNING *`,[uuidv4(),"meditrack_admin","admin@meditrack.com",hashedPassword,"ADMIN"]);
+        await pool.query(`INSERT into users (id,name,email,password_hash,role) VALUES ($1,$2,$3,$4,$5) RETURNING *`,[uuidv4(),"meditrack_admin","admin@meditrack.com",hashedPassword,"ADMIN"]);
         console.log("Admin created successfully");
         console.log("Email: admin@meditrack.com");
         console.log("Password:Admin123@A");
@@ -21,3 +21,5 @@ const seed=async()=>{
         process.exit(1);
     }
 }
+
+seed();
