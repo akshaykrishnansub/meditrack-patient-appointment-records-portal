@@ -92,7 +92,7 @@ const BookAppointment = () => {
                 <Link href="/dashboard/patient/appointments" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Appointments</Link>
                 <Link href="/dashboard/patient/records" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Medical Records</Link>
                 <Link href="/dashboard/patient/profile" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Profile</Link>
-                <Link href="/dashboard/messages" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Messages</Link>
+                <Link href="/dashboard/patient/messages" onClick={()=>setSidebarOpen(false)} className='block font-bold p-2 rounded hover:bg-green-200'>Messages</Link>
                 <button onClick={handleLogout} className='bg-red-500 mt-auto text-white font-bold px-4 py-2 hover:bg-red-600 cursor-pointer rounded'>Logout</button>
             </nav>
         </aside>
