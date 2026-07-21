@@ -7,6 +7,7 @@ import { passwordResetTemplate } from '../templates/passwordReset.js';
 import mailGenerator from '../utils/mailGenerator.js';
 import { doctorWelcomeTemplate } from '../templates/doctorWelcome.js';
 
+console.log("Attempting to send email...");
 const transporter=nodemailer.createTransport({
     service:"gmail",
     auth:{
@@ -29,6 +30,7 @@ export const sendEmail=async(to:string,subject:string,html:string)=>{
         console.log("Email sent",info.messageId);
     }catch(err){
         console.error("Email error",err);
+        throw err;
     }
 }
 

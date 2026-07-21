@@ -75,6 +75,7 @@ export const addDoctor=async(req:AuthRequest,res:Response)=>{
         await createAuditLog(req.user!.id,"CREATE_DOCTOR",`Created Doctor Account for Dr. ${doctor.name} (${doctor.email})`)
         await sendDoctorWelcomeEmail(name,email,password);
         return res.status(201).json({message:"Doctor created successfully",doctor});
+        console.log("sendDoctorWelcomeEmail finished");
     }catch(err){
         console.error(err);
         res.status(500).json({error:"Internal Server Error"});
