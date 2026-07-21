@@ -55,6 +55,8 @@ async function startServer(){
     }catch(err){
         console.error("❌ Database connection failed");
         console.error(err);
+
+        process.exit(1);
     }
 }
 
