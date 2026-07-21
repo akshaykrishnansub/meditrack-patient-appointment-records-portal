@@ -103,7 +103,7 @@ const AdminAppointmentManagement = () => {
           <button onClick={handleLogout} className='mt-auto bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 cursor-pointer'>Logout</button>
         </nav>
       </aside>
-      <main className='flex-1 md:p-8 md:ml-64 p-4 overflow-x-auto'>
+      <main className='flex-1 md:p-8 lg:ml-64 p-4 overflow-x-auto'>
         <div className='lg:hidden mb-6'>
           <button onClick={()=>setSidebarOpen(true)} className='p-2 shadow cursor-pointer'>☰</button>
         </div>
