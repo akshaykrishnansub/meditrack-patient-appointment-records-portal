@@ -11,6 +11,7 @@ const brevo=new BrevoClient({
     apiKey:process.env.BREVO_API_KEY!
 })
 export const sendEmail=async(to:string,subject:string,html:string)=>{
+    console.log("Inside sendEmail");
     try{
         await brevo.transactionalEmails.sendTransacEmail({
             sender:{
@@ -71,7 +72,8 @@ export const sendPasswordResetEmail=async(name:string,email:string,resetLink:str
 }
 
 export const sendDoctorWelcomeEmail=async(name:string,email:string,password:string)=>{
+    console.log("Inside sendDoctorWelcomeEmail");
     const mail=doctorWelcomeTemplate(name,email,password);
     const html=mailGenerator.generate(mail);
-    await sendEmail(email,"Welcome to MediTrack-Doctor Account",html)
+    await sendEmail(email,"Welcome to MediTrack-Doctor Account",html);
 }

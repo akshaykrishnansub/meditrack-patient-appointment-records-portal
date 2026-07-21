@@ -73,6 +73,7 @@ export const addDoctor=async(req:AuthRequest,res:Response)=>{
         const hashedPassword=await bcrypt.hash(password,10);
         const doctor=await createDoctor(name,email,hashedPassword);
         await createAuditLog(req.user!.id,"CREATE_DOCTOR",`Created Doctor Account for Dr. ${doctor.name} (${doctor.email})`)
+        console.log("Before sendDoctorWelcomeEmail");
         await sendDoctorWelcomeEmail(name,email,password);
         return res.status(201).json({message:"Doctor created successfully",doctor});
         console.log("sendDoctorWelcomeEmail finished");
