@@ -6,9 +6,9 @@ MediTrack is a full-stack healthcare web application that streamlines patient ap
 
 ## 🚀 Live Demo
 
-**Frontend:** https://your-frontend-url.vercel.app
+**Frontend:** https://meditrack-patient-appointment-recor.vercel.app
 
-**Backend API:** https://your-backend-url.onrender.com
+**Backend API:** https://meditrack-patient-appointment-records.onrender.com
 
 ---
 
