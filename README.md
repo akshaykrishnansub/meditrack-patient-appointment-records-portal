@@ -227,7 +227,7 @@ npm run dev
 Add screenshots for:
 
 - Login
-  <img width="1920" height="1080" alt="Screenshot (328)" src="https://github.com/user-attachments/assets/495752fc-f21c-4c99-a1f2-72931b61241d" />
+  <img width="1920" height="1080" alt="Screenshot (329)" src="https://github.com/user-attachments/assets/e74bf135-fbbd-4e28-9dba-5c615e2dc77e" />
 - Register
   <img width="1920" height="1080" alt="Screenshot (328)" src="https://github.com/user-attachments/assets/58cfbb42-a757-4fb6-98e0-df319555b038" />
 - Admin Dashboard
