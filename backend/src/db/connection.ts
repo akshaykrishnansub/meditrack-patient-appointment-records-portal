@@ -1,7 +1,9 @@
-import {Pool} from "pg";
+import pg, {Pool} from "pg";
 import dotenv from "dotenv";
 
 dotenv.config();
+
+pg.types.setTypeParser(1114, (str:string) => str);
 
 const pool:Pool=new Pool({
     port:Number(process.env.DB_PORT),
