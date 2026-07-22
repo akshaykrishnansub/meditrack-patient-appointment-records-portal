@@ -281,7 +281,7 @@ This was resolved by configuring the PostgreSQL driver to return timestamps as p
 
 **Akshay Krishnan**
 
-GitHub: https://github.com/yourusername
+GitHub: https://github.com/akshaykrishnansub
 ---
 
 ## 📄 License
