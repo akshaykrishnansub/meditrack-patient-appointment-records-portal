@@ -236,6 +236,9 @@ Add screenshots for:
 - <img width="1920" height="1080" alt="Screenshot (331)" src="https://github.com/user-attachments/assets/dd40ae1e-7d1e-44b9-bc6f-6b11d7d69d28" />
 - Medical Records
   <img width="1920" height="1080" alt="Screenshot (332)" src="https://github.com/user-attachments/assets/caf21b76-9d9f-4c57-a966-82b044ca5146" />
+- Mobile View
+  <img width="720" height="1600" alt="1000227170" src="https://github.com/user-attachments/assets/540ac925-cf66-45df-a6b5-e1b413090476" />
+
   
 ---
 
