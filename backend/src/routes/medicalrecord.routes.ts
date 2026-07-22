@@ -7,10 +7,7 @@ import { upload } from '../middleware/upload.js';
 const router=Router();
 
 //Upload Medical records
-router.post("/upload",(req, res, next) => {
-    console.log("UPLOAD REQUEST RECEIVED");
-    next();
-  },verifyToken,authorizeRoles("PATIENT"),upload.single("record"),uploadMedicalRecord);
+router.post("/upload",verifyToken,authorizeRoles("PATIENT"),upload.single("record"),uploadMedicalRecord);
 
 //View Own Medical records
 router.get("/",verifyToken,authorizeRoles("PATIENT"),getMedicalRecords);

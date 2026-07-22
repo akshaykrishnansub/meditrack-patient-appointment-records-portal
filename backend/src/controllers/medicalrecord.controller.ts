@@ -12,31 +12,20 @@ interface AuthRequest extends Request{
 
 export const uploadMedicalRecord=async(req:AuthRequest,res:Response)=>{
     try{
-        console.log("=====Upload Started======")
         const userId=req.user!.id
         const description=req.body.description;
-
-        console.log("User ID",userId);
-        console.log("Description",description);
-        console.log("File:",req.file);
         if(!req.file){
             return res.status(400).json({error:'Please upload a file'});
         }
-        console.log("Calling storage.upload...");
         const filePath=await storage.upload(req.file);
         if(!description){
             return res.status(400).json({error:"Description is required"});
         }
-        console.log("Returned from storage.upload:", filePath);
         const record=await createMedicalRecord(userId,filePath,description);
-        console.log("=== Upload Complete ===");
         await createAuditLog(userId,"UPLOADED_MEDICAL_RECORD",`Medical record with description "${description}"`)
         return res.status(201).json(record);
     }catch(err:any){
-        console.error("UPLOAD ERROR:");
         console.error(err);
-    console.error(err.message);
-    console.error(err?.stack);
         res.status(500).json({error:'Internal Server Error'});
     }
 }
