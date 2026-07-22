@@ -15,8 +15,17 @@ const s3=new S3Client({
 
 export class S3StorageService implements StorageService{
     async upload(file: Express.Multer.File): Promise<string> {
+        console.log("S3 Upload Started");
+
+        console.log("File path:", file.path);
+        console.log("Original Name:", file.originalname);
+        console.log("Bucket:", process.env.AWS_BUCKET_NAME);
+        console.log("Region:", process.env.AWS_REGION);
+
         const fileBuffer=await fs.readFile(file.path);
+        console.log("File read successfully");
         const key=`${Date.now()}-${file.originalname}`;
+        console.log("Uploading object:", key);
         const command=new PutObjectCommand({
             Bucket:process.env.AWS_BUCKET_NAME!,
             Key:key,
@@ -24,6 +33,7 @@ export class S3StorageService implements StorageService{
             ContentType:file.mimetype
         });
         await s3.send(command);
+        console.log("S3 Upload Successful");
         await fs.unlink(file.path);
         return key;
     }
