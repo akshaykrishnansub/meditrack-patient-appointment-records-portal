@@ -129,6 +129,9 @@ const PatientRecords = () => {
         formData.append("description",description);
 
         try{
+            console.log("Starting upload...");
+            console.log(selectedFile);
+            console.log(description);
             const res=await axios.post(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/records/upload`,
                 formData,{
@@ -155,6 +158,13 @@ const PatientRecords = () => {
         fetchPatientRecords();
         }catch(err:any){
             console.error(err);
+            console.log("========== UPLOAD ERROR ==========");
+            console.log("Message:", err.message);
+            console.log("Code:", err.code);
+            console.log("Status:", err.response?.status);
+            console.log("Response:", err.response?.data);
+            console.log("Request:", err.request);
+            console.log("Config:", err.config);
             showToast(err.response?.data?.error || "Something went wrong","error");
             
         }
