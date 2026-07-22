@@ -195,7 +195,6 @@ const DoctorDashboard = () => {
               <p className='text-xl font-semibold'>Time:{" "}<span className='font-normal text-xl'>{new Date(appointment.datetime).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</span></p>
               <div className='mt-4 flex flex-col lg:flex-row gap-2'>
                 <button onClick={()=>handleApprove(appointment.id)}className='bg-green-700 text-white font-bold p-2 rounded'>Approve</button>
-                <button className='bg-yellow-600 text-white font-bold p-2 rounded'>Reschedule</button>
                 <button onClick={()=>handleCancel(appointment.id)} className='bg-red-700 text-white font-bold p-2 rounded'>Cancel</button>
               </div>
             </div>

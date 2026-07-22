@@ -133,9 +133,6 @@ const PatientRecords = () => {
                 `${process.env.NEXT_PUBLIC_API_URL}/api/records/upload`,
                 formData,{
                     withCredentials:true,
-                    headers:{
-                        "Content-Type":"multipart/form-data"
-                    },
                     onUploadProgress:(ProgressEvent)=>{
                         const percentCompleted=Math.round(
                             (ProgressEvent.loaded*100)/(ProgressEvent.total || 1)
@@ -159,6 +156,7 @@ const PatientRecords = () => {
         }catch(err:any){
             console.error(err);
             showToast(err.response?.data?.error || "Something went wrong","error");
+            
         }
     }
 
